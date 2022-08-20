@@ -1,0 +1,50 @@
+{
+    "name": "hotmeteor/receiver",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adam Campbell",
+            "email": "adam@hotmeteor.com"
+        }
+    ],
+    "keywords": [
+        "laravel",
+        "receiver",
+        "webhooks"
+    ],
+    "support": {
+        "issues": "https://github.com/hotmeteor/receiver/issues",
+        "source": "https://github.com/hotmeteor/receiver"
+    },
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^8.0|^9.0"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^6.0",
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Receiver\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Receiver\\ReceiverServiceProvider"
+            ],
+            "aliases": {
+                "Receiver": "Receiver\\Facades\\Receiver"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

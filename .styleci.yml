@@ -1,0 +1,17 @@
+php:
+  preset: laravel
+  finder:
+    not-name:
+      - index.php
+      - server.php
+  enabled:
+    - fully_qualified_strict_types
+js:
+  finder:
+    not-name:
+      - webpack.mix.js
+    exclude:
+      - public
+    not-path:
+      - dist
+css: true
