@@ -7,7 +7,7 @@ interface Provider
     /**
      * Get the webhook instance.
      *
-     * @return Webhook
+     * @return Webhook|null
      */
-    public function webhook(): Webhook;
+    public function webhook(): ?Webhook;
 }

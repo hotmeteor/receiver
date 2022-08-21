@@ -8,11 +8,11 @@ class SlackProvider extends AbstractProvider
 {
     /**
      * @param Request $request
-     * @return string|null
+     * @return array|null
      */
-    public function challenge(Request $request): string|null
+    public function handshake(Request $request): array|null
     {
-        return $this->getEvent($request) === 'url_verification' ? $request->input('challenge') : null;
+        return $request->has('challenge') ? $request->only('challenge') : null;
     }
 
     /**
@@ -25,15 +25,17 @@ class SlackProvider extends AbstractProvider
     {
         $timestamp = $request->header('X-Slack-Request-Timestamp');
 
-        if ((time() - $timestamp) < 60 * 5) {
+        if ((now()->unix() - $timestamp) < 60 * 5) {
             $signature = implode(':', ['v0', $timestamp, $request->getContent()]);
             $signature = hash_hmac('sha256', $signature, $this->secret);
             $signature = 'v0='.$signature;
 
-            if (! hash_equals($signature, $request->header('X-Slack-Signature'))) {
-                abort(401);
+            if (hash_equals($signature, $request->header('X-Slack-Signature'))) {
+                return;
             }
         }
+
+        abort(401, 'Unauthorized');
     }
 
     /**

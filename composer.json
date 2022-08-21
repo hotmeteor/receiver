@@ -31,6 +31,11 @@
             "Receiver\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Receiver\\Tests\\": "tests/"
+        }
+    },
     "scripts": {
         "test": "vendor/bin/phpunit"
     },

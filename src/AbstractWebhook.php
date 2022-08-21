@@ -10,23 +10,23 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
     /**
      * The normalized name of the webhook event.
      *
-     * @var string
+     * @var string|null
      */
-    public string $event;
+    public string|null $event = null;
 
     /**
      * The payload of the webhook event.
      *
      * @var array
      */
-    public array $data;
+    public array $data = [];
 
     /**
      * The webhook's raw attributes.
      *
      * @var array
      */
-    public array $webhook;
+    public array $webhook = [];
 
     /**
      * @return string

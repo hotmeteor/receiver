@@ -16,17 +16,17 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      *
      * @var Webhook|null
      */
-    protected Webhook|null $webhook;
+    protected Webhook|null $webhook = null;
 
     /**
      * @var Request|null
      */
-    protected Request|null $request;
+    protected Request|null $request = null;
 
     /**
-     * @var string|null
+     * @var mixed
      */
-    protected string|null $response;
+    protected mixed $response = null;
 
     /**
      * @param string|null $secret
@@ -58,18 +58,19 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     public function receive(Request $request): static
     {
-        if (method_exists(static::class, 'challenge')) {
-            $this->response = call_user_func([$this, 'challenge'], $request);
+        $this->request = $request;
 
-            return $this;
+        if (method_exists(static::class, 'handshake')) {
+            if ($this->response = call_user_func([$this, 'handshake'], $request)) {
+                return $this;
+            }
         }
 
         if (method_exists(static::class, 'verify')) {
             call_user_func([$this, 'verify'], $request);
         }
 
-        $this->request = $request;
-        $this->webhook = $this->mapWebhook();
+        $this->webhook = $this->mapWebhook($request);
 
         $this->handle();
 
@@ -94,21 +95,22 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     }
 
     /**
-     * @return Webhook
+     * @return Webhook|null
      */
-    public function webhook(): Webhook
+    public function webhook(): ?Webhook
     {
         return $this->webhook;
     }
 
     /**
+     * @param Request $request
      * @return Webhook
      */
-    protected function mapWebhook(): Webhook
+    protected function mapWebhook(Request $request): Webhook
     {
-        return (new Webhook())->setRaw([
-            'event' => $this->getEvent($this->request),
-            'data' => $this->getData($this->request),
+        return (new Webhook())->setRaw($request->all())->map([
+            'event' => $this->getEvent($request),
+            'data' => $this->getData($request),
         ]);
     }
 
@@ -133,10 +135,11 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     protected function getClass(string $event): string
     {
         $className = Str::studly($event);
+        $driverName = Str::replace('Provider', '', class_basename(static::class));
 
         $basepath = rtrim($this->handlerPath(), '\\');
 
-        return implode('\\', [$basepath, Str::studly($this->driver), $className]);
+        return implode('\\', [$basepath, $driverName, $className]);
     }
 
     /**
