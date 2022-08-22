@@ -1,3 +1,5 @@
+![](https://media.giphy.com/media/LoCDk7fecj2dwCtSB3/giphy.gif)
+
 # Receiver
 
 **Receiver is a drop-in webhook handling library for Laravel.**
