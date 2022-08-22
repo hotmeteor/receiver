@@ -251,6 +251,7 @@ Receiver needs two pieces of information to receive and handle webhook events:
 
 Since these are found in different attributes or headers depending on the webhook, Receiver makes it simple ways to define them in your provider.
 
+```php
 <?php
 
 namespace Receiver\Providers;
