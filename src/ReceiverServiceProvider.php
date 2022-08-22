@@ -4,6 +4,7 @@ namespace Receiver;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
+use Receiver\Console\Commands\GenerateReceiver;
 use Receiver\Contracts\Factory;
 
 class ReceiverServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -18,6 +19,17 @@ class ReceiverServiceProvider extends ServiceProvider implements DeferrableProvi
         $this->app->singleton(Factory::class, function ($app) {
             return new ReceiverManager($app);
         });
+
+        $this->app->alias(Factory::class, 'receiver');
+    }
+
+    public function boot()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                GenerateReceiver::class,
+            ]);
+        }
     }
 
     /**
@@ -27,6 +39,9 @@ class ReceiverServiceProvider extends ServiceProvider implements DeferrableProvi
      */
     public function provides()
     {
-        return [Factory::class];
+        return [
+            Factory::class,
+            'receiver',
+        ];
     }
 }

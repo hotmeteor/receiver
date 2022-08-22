@@ -174,17 +174,73 @@ class CustomerCreated implements ShouldQueue
 }
 ```
 
-### Changing handler paths
-
-WIP
-
 ## Extending Receiver
+
+As mentioned previously, Receiver can handle webhooks from any source. Even though there are a few providers distributed with the package, Receiver can easily be extended to work with other apps. 
 
 ### Adding Providers
 
-WIP
+The easiest way to add a new provider is to use the included Artisan command:
 
+```shell
+php artisan receiver:make <name>
+```
 
+This command will generate a new provider with the name you defined. This class will be created in the `App\Http\Receivers` namespace.
+
+If your provider needs to be able to verify webhook signatures simply add the `--verified` flag to the command:
+
+```shell
+php artisan receiver:make <name> --verified
+```
+
+Once you've created your new provider you can simply extend Receiver in your `AppServiceProvider` so that Receiver can use it:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use App\Http\Receivers\MailchimpProvider;
+use App\Http\Receivers\MailgunProvider;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        // 
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $receiver = app('receiver');
+
+        $receiver->extend('mailchimp', function ($app) {
+            return new MailchimpProvider(
+                config('services.mailchimp.webhook_secret')
+            );
+        });
+        
+        $receiver->extend('mailgun', function ($app) {
+            return new MailgunProvider(
+                config('services.mailgun.webhook_secret')
+            );
+        });
+    }
+}
+
+```
 
 
 ## Credits
