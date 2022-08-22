@@ -19,6 +19,23 @@ Of course, Receiver can receive webhooks from any source using custom providers.
 [![Latest Version on Packagist](https://img.shields.io/packagist/vpre/hotmeteor/receiver.svg?style=flat-square)](https://packagist.org/packages/hotmeteor/receiver)
 ![PHP from Packagist](https://img.shields.io/packagist/php-v/hotmeteor/receiver)
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Receiving Webhooks](#receiving-webhooks)
+    - [The Basics](#the-basics)
+    - [Receiving from multiple apps](#receiving-from-multiple-apps)
+- [Handling Webhooks](#handling-webhooks)
+    - [The Basics](#the-basics-1)
+    - [Queueing handlers](#queueing-handlers)
+- [Extending Receiver](#extending-receiver)
+    - [Adding custom providers](#adding-custom-providers)
+    - [Defining attributes](#defining-attributes)
+    - [Securing webhooks](#securing-webhooks)
+    - [Handshakes](#handshakes)
+- [Credits](#credits)
+- [License](#license)
+
 ## Installation
 
 Requires:
@@ -178,7 +195,7 @@ class CustomerCreated implements ShouldQueue
 
 As mentioned previously, Receiver can handle webhooks from any source. Even though there are a few providers distributed with the package, Receiver can easily be extended to work with other apps. 
 
-### Adding Providers
+### Adding Custom Providers
 
 The easiest way to add a new provider is to use the included Artisan command:
 
