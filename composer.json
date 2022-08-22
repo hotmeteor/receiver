@@ -1,6 +1,7 @@
 {
     "name": "hotmeteor/receiver",
     "type": "library",
+    "description": "A drop-in webhook handling library for Laravel",
     "license": "MIT",
     "authors": [
         {
