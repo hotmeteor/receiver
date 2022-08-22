@@ -4,6 +4,15 @@
 
 Webhooks are a powerful part of any API lifecycle. **Receiver** aims to make handling incoming webhooks in your Laravel app a consistent and easy process.
 
+Out of the box, Receiver has built in support for:
+
+- [GitHub Webhooks](https://docs.github.com/en/developers/webhooks-and-events/webhooks/about-webhooks)
+- [Postmark Webhooks](https://postmarkapp.com/developer/webhooks/webhooks-overview)
+- [Slack Events API](https://api.slack.com/apis/connections/events-api)
+- [Stripe Webhooks](https://stripe.com/docs/webhooks)
+
+Of course, Receiver can receive webhooks from any source using custom providers.
+
 ### Installation
 
 ```shell
