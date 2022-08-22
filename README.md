@@ -242,6 +242,108 @@ class AppServiceProvider extends ServiceProvider
 
 ```
 
+### Defining Attributes
+
+Receiver needs two pieces of information to receive and handle webhook events:
+
+- The event `name`
+- The event `data`
+
+Since these are found in different attributes or headers depending on the webhook, Receiver makes it simple ways to define them in your provider.
+
+<?php
+
+namespace Receiver\Providers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class CustomProvider extends AbstractProvider
+{
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function getEvent(Request $request): string
+    {
+        return $request->input('event.name');
+    }
+    
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function getData(Request $request): string
+    {
+        return $request->all();
+    }
+}
+```
+
+The *`getEvent()`* method is used to return the name of the webhook event, ie. `customer.created`.
+
+The *`getData()`* method is used to return the payload of data that can be used within your handler. By default this is set to `$request->all()`.
+
+### Securing Webhooks
+
+Many webhooks have ways of verifying their authenticity as they are received, most commonly through signatures or basic authentication. No matter the strategy, Receiver allows you to write custom verification code as necessary. Simply implement the `verify` method in your provider and return true or false if it passes.
+
+A `false` return will result in a 401 response being returned to the webhook sender.
+
+```php
+<?php
+
+namespace App\Http\Controllers\Webhooks;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class WebhooksController extends Controller
+{
+    public function verify(Request $request): bool
+    {
+        // return result of verification
+    }
+
+    public function store(Request $request, string $driver)
+    {
+        Receiver::driver($driver)
+            ->receive($request)
+            ->ok();
+    }
+}
+```
+
+### Handshakes
+
+Some webhooks want to perform a "handshake" to check if your endpoint exists and returns a valid response when it's first set up. To facilitate this, implement the `handshake` method in your provider:
+
+```php
+<?php
+
+namespace App\Http\Controllers\Webhooks;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class WebhooksController extends Controller
+{
+    public function handshake(Request $request): array
+    {
+        // return result of handshake
+    }
+
+    public function store(Request $request, string $driver)
+    {
+        Receiver::driver($driver)
+            ->receive($request)
+            ->ok();
+    }
+}
+```
+
+Unlike the `verify` method, `handshake` expects an array to be returned, since many times the webhook sender is expecting a specific "challenge" response. The return of the handshake method is sent back to the webhook sender.
+
 
 ## Credits
 
