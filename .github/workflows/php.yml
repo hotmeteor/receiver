@@ -14,7 +14,7 @@ jobs:
       fail-fast: true
       matrix:
         laravel: [ 8.*, 9.* ]
-        php: [ 8.0, 8.1, 8.2 ]
+        php: [ 8.0, 8.1 ]
         include:
           - laravel: 8.*
             php: 8.0
