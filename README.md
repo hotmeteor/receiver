@@ -13,6 +13,10 @@ Out of the box, Receiver has built in support for:
 
 Of course, Receiver can receive webhooks from any source using custom providers.
 
+![Tests](https://github.com/hotmeteor/receiver/workflows/Tests/badge.svg)
+[![Latest Version on Packagist](https://img.shields.io/packagist/vpre/hotmeteor/receiver.svg?style=flat-square)](https://packagist.org/packages/hotmeteor/receiver)
+![PHP from Packagist](https://img.shields.io/packagist/php-v/hotmeteor/receiver)
+
 ## Installation
 
 Requires:
@@ -24,9 +28,9 @@ Requires:
 composer require hotmeteor/receiver
 ```
 
-## Usage
+## Receiving Webhooks
 
-### Receiving Webhooks
+### The Basics
 
 Webhooks require an exposed endpoint to POST to. Receiver aims to make this a one-time setup that supports any of your incoming webhooks.
 
@@ -50,7 +54,16 @@ Webhooks require an exposed endpoint to POST to. Receiver aims to make this a on
        }
     }
     ``` 
-   
+
+The methods being used are simple:
+
+- Define the `driver` that should process the webhook
+- `receive` the request for handling
+- Respond back to the sender with a `200` `ok` response
+
+
+### Receiving from multiple apps
+
 Maybe you have webhooks coming in from multiple services -- handle them all from one controller with a driver variable from your route.
 
 ```php
@@ -91,7 +104,9 @@ class WebhooksController extends Controller
 }
 ```
 
-### Handling Webhooks
+## Handling Webhooks
+
+### The Basics
 
 Now that webhooks are being received they need to be handled. Receiver will look for designated `Handler` classes for each event type that comes in in the `App\Http\Handlers\[Driver]` namespace. Receiver *does not* provide these handlers -- they are up to you to provide as needed. If Receiver doesn't find a matching handler it simplies ignores the event and responds with a 200 status code.
 
@@ -117,7 +132,7 @@ class CustomerCreated
 }
 ```
 
-#### Queueing Handlers
+### Queueing Handlers
 
 Of course, since your app may be receiving a lot of webhooks it might be better practice to queue these handlers. That way your app can efficiently respond back to the service that the webhook was received and requests aren't being blocked as events are handled.
 
@@ -152,3 +167,26 @@ class CustomerCreated implements ShouldQueue
     }
 }
 ```
+
+### Changing handler paths
+
+WIP
+
+## Extending Receiver
+
+### Adding Providers
+
+WIP
+
+
+
+
+## Credits
+
+- [Adam Campbell](https://github.com/hotmeteor)
+- [All Contributors](../../contributors)
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
