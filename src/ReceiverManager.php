@@ -7,7 +7,9 @@ use Illuminate\Support\Manager;
 use InvalidArgumentException;
 use Receiver\Contracts\Factory;
 use Receiver\Providers\GithubProvider;
+use Receiver\Providers\PostmarkProvider;
 use Receiver\Providers\SlackProvider;
+use Receiver\Providers\StripeProvider;
 
 class ReceiverManager extends Manager implements Factory
 {
@@ -38,12 +40,38 @@ class ReceiverManager extends Manager implements Factory
     /**
      * Create an instance of the specified driver.
      */
+    protected function createPostmarkProvider(): PostmarkProvider
+    {
+        $config = $this->config->get('services.postmark');
+
+        return $this->buildProvider(
+            PostmarkProvider::class,
+            $config
+        );
+    }
+
+    /**
+     * Create an instance of the specified driver.
+     */
     protected function createSlackDriver(): SlackProvider
     {
         $config = $this->config->get('services.slack');
 
         return $this->buildProvider(
             SlackProvider::class,
+            $config
+        );
+    }
+
+    /**
+     * Create an instance of the specified driver.
+     */
+    protected function createStripeProvider(): StripeProvider
+    {
+        $config = $this->config->get('services.stripe');
+
+        return $this->buildProvider(
+            StripeProvider::class,
             $config
         );
     }

@@ -67,7 +67,9 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         }
 
         if (method_exists(static::class, 'verify')) {
-            call_user_func([$this, 'verify'], $request);
+            if (! call_user_func([$this, 'verify'], $request)) {
+                abort(401, 'Unauthorized');
+            }
         }
 
         $this->webhook = $this->mapWebhook($request);

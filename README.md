@@ -30,6 +30,10 @@ Requires:
 composer require hotmeteor/receiver
 ```
 
+Optional:
+
+**Stripe** support requires [`stripe/stripe-php`](https://github.com/stripe/stripe-php)
+
 ## Receiving Webhooks
 
 ### The Basics

@@ -19,9 +19,9 @@ class SlackProvider extends AbstractProvider
      * https://api.slack.com/authentication/verifying-requests-from-slack#verifying-requests-from-slack-using-signing-secrets__a-recipe-for-security__step-by-step-walk-through-for-validating-a-request.
      *
      * @param  Request  $request
-     * @return void
+     * @return bool
      */
-    public function verify(Request $request): void
+    public function verify(Request $request): bool
     {
         $timestamp = $request->header('X-Slack-Request-Timestamp');
 
@@ -30,12 +30,10 @@ class SlackProvider extends AbstractProvider
             $signature = hash_hmac('sha256', $signature, $this->secret);
             $signature = 'v0='.$signature;
 
-            if (hash_equals($signature, $request->header('X-Slack-Signature'))) {
-                return;
-            }
+            return hash_equals($signature, $request->header('X-Slack-Signature'));
         }
 
-        abort(401, 'Unauthorized');
+        return false;
     }
 
     /**

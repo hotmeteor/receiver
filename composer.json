@@ -25,7 +25,8 @@
     "require-dev": {
         "nunomaduro/collision": "^6.0",
         "orchestra/testbench": "^7.0",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "stripe/stripe-php": "^9.2"
     },
     "autoload": {
         "psr-4": {
@@ -49,6 +50,9 @@
                 "Receiver": "Receiver\\Facades\\Receiver"
             }
         }
+    },
+    "suggest": {
+        "stripe/stripe-php": "Required to use the Stripe provider"
     },
     "config": {
         "sort-packages": true
