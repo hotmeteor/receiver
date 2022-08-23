@@ -29,6 +29,11 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     protected mixed $response = null;
 
     /**
+     * @var string
+     */
+    protected string $handlerNamespace = '\\App\\Http\\Handlers';
+
+    /**
      * @param string|null $secret
      */
     public function __construct(protected ?string $secret = null)
@@ -124,7 +129,7 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         $class = $this->getClass($event = $this->webhook->getEvent());
 
         if (class_exists($class)) {
-            $instance = new $class($event, $this->webhook);
+            $instance = new $class($event, $this->webhook->getData(), $this->webhook);
 
             dispatch($instance);
         }
@@ -139,16 +144,27 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         $className = Str::studly($event);
         $driverName = Str::replace('Provider', '', class_basename(static::class));
 
-        $basepath = rtrim($this->handlerPath(), '\\');
+        $basepath = rtrim($this->getHandlerNamespace(), '\\');
 
         return implode('\\', [$basepath, $driverName, $className]);
     }
 
     /**
+     * @param string $namespace
+     * @return $this
+     */
+    public function setHandlerNamespace(string $namespace): static
+    {
+        $this->handlerNamespace = $namespace;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    protected function handlerPath(): string
+    public function getHandlerNamespace(): string
     {
-        return '\\App\\Http\\Handlers';
+        return $this->handlerNamespace;
     }
 }
