@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 class GithubProvider extends AbstractProvider
 {
     /**
+     * https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks.
+     *
      * @param Request $request
      * @return bool
      */
