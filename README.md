@@ -13,7 +13,7 @@ Out of the box, Receiver has built in support for:
 - [Slack Events API](https://api.slack.com/apis/connections/events-api)
 - [Stripe Webhooks](https://stripe.com/docs/webhooks)
 
-Of course, Receiver can receive webhooks from any source using custom providers.
+Of course, Receiver can receive webhooks from any source using [custom providers](#extending-receiver).
 
 ![Tests](https://github.com/hotmeteor/receiver/workflows/Tests/badge.svg)
 [![Latest Version on Packagist](https://img.shields.io/packagist/vpre/hotmeteor/receiver.svg?style=flat-square)](https://packagist.org/packages/hotmeteor/receiver)
