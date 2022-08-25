@@ -7,6 +7,7 @@ use Illuminate\Support\Manager;
 use InvalidArgumentException;
 use Receiver\Contracts\Factory;
 use Receiver\Providers\GithubProvider;
+use Receiver\Providers\HubspotProvider;
 use Receiver\Providers\PostmarkProvider;
 use Receiver\Providers\SlackProvider;
 use Receiver\Providers\StripeProvider;
@@ -40,7 +41,20 @@ class ReceiverManager extends Manager implements Factory
     /**
      * Create an instance of the specified driver.
      */
-    protected function createPostmarkDriver(): PostmarkProvider
+    protected function createHubspotDriver(): HubspotProvider
+    {
+        $config = $this->config->get('services.hubspot');
+
+        return $this->buildProvider(
+            HubspotProvider::class,
+            $config
+        );
+    }
+
+    /**
+     * Create an instance of the specified driver.
+     */
+    protected function createPostmarkProvider(): PostmarkProvider
     {
         $config = $this->config->get('services.postmark');
 

@@ -1,5 +1,3 @@
-![](https://media.giphy.com/media/LoCDk7fecj2dwCtSB3/giphy.gif)
-
 # Receiver
 
 **Receiver is a drop-in webhook handling library for Laravel.**
@@ -9,6 +7,7 @@ Webhooks are a powerful part of any API lifecycle. **Receiver** aims to make han
 Out of the box, Receiver has built in support for:
 
 - [GitHub Webhooks](https://docs.github.com/en/developers/webhooks-and-events/webhooks/about-webhooks)
+- [Hubspot Webhooks](https://developers.hubspot.com/docs/api/webhooks)
 - [Postmark Webhooks](https://postmarkapp.com/developer/webhooks/webhooks-overview)
 - [Slack Events API](https://api.slack.com/apis/connections/events-api)
 - [Stripe Webhooks](https://stripe.com/docs/webhooks)
@@ -372,3 +371,4 @@ Unlike the `verify` method, `handshake` expects an array to be returned, since m
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
+![](https://media.giphy.com/media/LoCDk7fecj2dwCtSB3/giphy.gif)
