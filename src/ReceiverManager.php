@@ -80,7 +80,7 @@ class ReceiverManager extends Manager implements Factory
     /**
      * Create an instance of the specified driver.
      */
-    protected function createStripeProvider(): StripeProvider
+    protected function createStripeDriver(): StripeProvider
     {
         $config = $this->config->get('services.stripe');
 
