@@ -6,6 +6,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Manager;
 use InvalidArgumentException;
 use Receiver\Contracts\Factory;
+use Receiver\Providers\AbstractProvider;
+use Receiver\Providers\FakeProvider;
 use Receiver\Providers\GithubProvider;
 use Receiver\Providers\HubspotProvider;
 use Receiver\Providers\PostmarkProvider;
@@ -91,11 +93,22 @@ class ReceiverManager extends Manager implements Factory
     }
 
     /**
+     * Create an instance of the specified driver.
+     */
+    protected function createFakeDriver(): FakeProvider
+    {
+        return $this->buildProvider(
+            FakeProvider::class,
+            []
+        );
+    }
+
+    /**
      * Build a webhook provider instance.
      *
      * @param string $provider
      * @param array $config
-     * @return \Receiver\Providers\AbstractProvider
+     * @return AbstractProvider
      */
     public function buildProvider(string $provider, array $config): Providers\AbstractProvider
     {
