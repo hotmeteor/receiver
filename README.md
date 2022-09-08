@@ -367,6 +367,12 @@ Unlike the `verify` method, `handshake` expects an array to be returned, since m
 - [Adam Campbell](https://github.com/hotmeteor)
 - [All Contributors](../../contributors)
 
+<a href = "https://github.com/hotmeteor/receiver/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=hotmeteor/receiver"/>
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
