@@ -288,9 +288,9 @@ class CustomProvider extends AbstractProvider
     
     /**
      * @param Request $request
-     * @return string
+     * @return array
      */
-    public function getData(Request $request): string
+    public function getData(Request $request): array
     {
         return $request->all();
     }
