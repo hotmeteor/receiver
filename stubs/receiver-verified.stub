@@ -24,4 +24,13 @@ class {{ providerClass }} extends AbstractProvider
     {
         //
     }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function getData(Request $request): array
+    {
+        //
+    }
 }
