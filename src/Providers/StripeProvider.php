@@ -24,7 +24,7 @@ class StripeProvider extends AbstractProvider
     public function verify(Request $request): bool
     {
         $payload = $request->getContent();
-        $signature = $request->header('HTTP_STRIPE_SIGNATURE');
+        $signature = $request->header('STRIPE_SIGNATURE');
 
         try {
             \Stripe\Webhook::constructEvent(
