@@ -141,7 +141,7 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     protected function getClass(string $event): string
     {
-        $className = Str::studly($event);
+        $className = Str::studly(str_replace('.', ' ', $event));
         $driverName = Str::replace('Provider', '', class_basename(static::class));
 
         $basepath = rtrim($this->getHandlerNamespace(), '\\');
