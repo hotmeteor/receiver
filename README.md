@@ -126,6 +126,35 @@ class WebhooksController extends Controller
 }
 ```
 
+### Advanced Usage
+
+#### Fallbacks
+
+Receiver allows you to safely handle webhooks for events you do *not* handle. Add a `fallback` method before `ok` – it takes a callback that is passed the webhook object.
+
+```php
+<?php
+
+namespace App\Http\Controllers\Webhooks;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Receiver\Providers\Webhook;
+
+class WebhooksController extends Controller
+{
+   public function store(Request $request, string $driver)
+   {
+       Receiver::driver($driver)
+           ->receive($request)
+           ->fallback(function(Webhook $webhook) => {
+               // Do whatever you like here...
+           })
+           ->ok();
+   }
+}
+```
+
 ## Handling Webhooks
 
 ### The Basics
@@ -310,23 +339,16 @@ A `false` return will result in a 401 response being returned to the webhook sen
 ```php
 <?php
 
-namespace App\Http\Controllers\Webhooks;
+namespace Receiver\Providers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class WebhooksController extends Controller
+class CustomProvider extends AbstractProvider
 {
     public function verify(Request $request): bool
     {
         // return result of verification
-    }
-
-    public function store(Request $request, string $driver)
-    {
-        Receiver::driver($driver)
-            ->receive($request)
-            ->ok();
     }
 }
 ```
@@ -338,23 +360,16 @@ Some webhooks want to perform a "handshake" to check if your endpoint exists and
 ```php
 <?php
 
-namespace App\Http\Controllers\Webhooks;
+namespace Receiver\Providers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class WebhooksController extends Controller
+class CustomProvider extends AbstractProvider
 {
     public function handshake(Request $request): array
     {
         // return result of handshake
-    }
-
-    public function store(Request $request, string $driver)
-    {
-        Receiver::driver($driver)
-            ->receive($request)
-            ->ok();
     }
 }
 ```
