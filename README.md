@@ -147,7 +147,7 @@ class WebhooksController extends Controller
    {
        Receiver::driver($driver)
            ->receive($request)
-           ->fallback(function(Webhook $webhook) => {
+           ->fallback(function(Webhook $webhook) {
                // Do whatever you like here...
            })
            ->ok();
