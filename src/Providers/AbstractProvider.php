@@ -2,7 +2,9 @@
 
 namespace Receiver\Providers;
 
+use Closure;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -27,6 +29,16 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      * @var mixed
      */
     protected mixed $response = null;
+
+    /**
+     * @var Closure|null
+     */
+    protected Closure|null $fallback = null;
+
+    /**
+     * @var PendingDispatch|null
+     */
+    protected PendingDispatch|null $dispatched = null;
 
     /**
      * @var string
@@ -89,7 +101,24 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     public function ok(): JsonResponse|Response
     {
+        if (! $this->dispatched && $this->fallback) {
+            $callback = $this->fallback;
+
+            $callback($this->webhook);
+        }
+
         return $this->toResponse($this->request);
+    }
+
+    /**
+     * @param Closure $closure
+     * @return $this
+     */
+    public function fallback(Closure $closure): static
+    {
+        $this->fallback = $closure;
+
+        return $this;
     }
 
     /**
@@ -131,7 +160,7 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         if (class_exists($class)) {
             $instance = new $class($event, $this->webhook->getData(), $this->webhook);
 
-            dispatch($instance);
+            $this->dispatched = dispatch($instance);
         }
     }
 
@@ -141,12 +170,29 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     protected function getClass(string $event): string
     {
-        $className = Str::studly(str_replace('.', ' ', $event));
-        $driverName = Str::replace('Provider', '', class_basename(static::class));
+        $className = $this->prepareHandlerClassname($event);
+        $driverName = $this->prepareDriverClassname();
 
         $basepath = rtrim($this->getHandlerNamespace(), '\\');
 
         return implode('\\', [$basepath, $driverName, $className]);
+    }
+
+    /**
+     * @param string $event
+     * @return string
+     */
+    protected function prepareHandlerClassname(string $event): string
+    {
+        return Str::studly(str_replace('.', ' ', $event));
+    }
+
+    /**
+     * @return string
+     */
+    protected function prepareDriverClassname(): string
+    {
+        return Str::replace('Provider', '', class_basename(static::class));
     }
 
     /**
