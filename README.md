@@ -109,8 +109,6 @@ class WebhooksController extends Controller
 
 The provided `ReceivesWebhooks` trait will take care of this for you.
 
-_Note: you'll still need to create the route to this action._
-
 ```php
 <?php
 
@@ -124,6 +122,13 @@ class WebhooksController extends Controller
 {
    use ReceivesWebhooks;
 }
+```
+
+_Note: you'll still need to create the route to this action._ Example:
+
+```php
+Route::post('/hooks/{driver}', [\App\Http\Controllers\Webhooks\WebhooksController::class, 'store'])
+    ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
 ```
 
 ### Advanced Usage
