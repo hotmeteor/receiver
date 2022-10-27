@@ -3,6 +3,7 @@
 namespace Receiver\Providers;
 
 use Closure;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Http\JsonResponse;
@@ -160,7 +161,9 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         if (class_exists($class)) {
             $instance = new $class($event, $this->webhook->getData(), $this->webhook);
 
-            $this->dispatched = dispatch($instance);
+            $this->dispatched = $instance instanceof ShouldQueue
+                ? dispatch($instance)
+                : dispatch_sync($instance);
         }
     }
 
