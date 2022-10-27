@@ -175,8 +175,12 @@ Each handler is constructed with the `event` (name of the webhook event) and `da
 
 namespace App\Http\Handlers\Stripe;
 
+use Illuminate\Foundation\Bus\Dispatchable;
+
 class CustomerCreated
 {
+    use Dispatchable;
+    
     public function __construct(public string $event, public array $data)
     {
     }

@@ -2,11 +2,14 @@
 
 namespace {{ providerNamespace }};
 
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Http\Request;
 use Receiver\Providers\AbstractProvider;
 
 class {{ providerClass }} extends AbstractProvider
 {
+    use Dispatchable;
+
     /**
      * @param Request $request
      * @return bool

@@ -15,7 +15,8 @@ class ProviderTest extends TestCase
 
         $provider = new TestProvider();
 
-        $response = $provider->receive($request)
+        $response = $provider
+            ->receive($request)
             ->fallback(fn (Webhook $webhook) => throw new \Exception('Fallback!'))
             ->ok();
 
@@ -33,7 +34,8 @@ class ProviderTest extends TestCase
 
         $provider = new TestProvider();
 
-        $response = $provider->receive($request)
+        $response = $provider
+            ->receive($request)
             ->fallback(fn (Webhook $webhook) => throw new \Exception('Fallback!'))
             ->ok();
 

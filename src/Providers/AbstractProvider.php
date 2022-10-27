@@ -3,7 +3,6 @@
 namespace Receiver\Providers;
 
 use Closure;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Http\JsonResponse;
@@ -102,7 +101,7 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     public function ok(): JsonResponse|Response
     {
-        if (! $this->dispatched && $this->fallback) {
+        if (! $this->dispatched() && $this->fallback) {
             $callback = $this->fallback;
 
             $callback($this->webhook);
@@ -140,6 +139,14 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     }
 
     /**
+     * @return PendingDispatch|null
+     */
+    public function dispatched(): ?PendingDispatch
+    {
+        return $this->dispatched;
+    }
+
+    /**
      * @param Request $request
      * @return Webhook
      */
@@ -152,19 +159,19 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     }
 
     /**
-     * @return void
+     * @return AbstractProvider
      */
-    protected function handle(): void
+    protected function handle(): static
     {
         $class = $this->getClass($event = $this->webhook->getEvent());
 
         if (class_exists($class)) {
             $instance = new $class($event, $this->webhook->getData(), $this->webhook);
 
-            $this->dispatched = $instance instanceof ShouldQueue
-                ? dispatch($instance)
-                : dispatch_sync($instance);
+            $this->dispatched = dispatch($instance);
         }
+
+        return $this;
     }
 
     /**
