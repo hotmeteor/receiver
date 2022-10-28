@@ -1,3 +1,5 @@
+![Receiver](./art/logo.png)
+
 # Receiver
 
 **Receiver is a drop-in webhook handling library for Laravel.**
