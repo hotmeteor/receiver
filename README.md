@@ -34,6 +34,7 @@ Of course, Receiver can receive webhooks from any source using [custom providers
     - [Defining attributes](#defining-attributes)
     - [Securing webhooks](#securing-webhooks)
     - [Handshakes](#handshakes)
+- [Community Receivers](#share-your-receivers)
 - [Credits](#credits)
 - [License](#license)
 
@@ -387,6 +388,9 @@ class CustomProvider extends AbstractProvider
 
 Unlike the `verify` method, `handshake` expects an array to be returned, since many times the webhook sender is expecting a specific "challenge" response. The return of the handshake method is sent back to the webhook sender.
 
+## Share your Receivers!
+
+**Have you created a custom Receiver?** Share it with the community in our **[Receivers Discussion topic](https://github.com/hotmeteor/receiver/discussions/categories/receivers)**!
 
 ## Credits
 
