@@ -73,7 +73,7 @@ Webhooks require an exposed endpoint to POST to. Receiver aims to make this a on
     {
        public function store(Request $request)
        {
-           Receiver::driver('slack')
+           return Receiver::driver('slack')
                ->receive($request)
                ->ok();
        }
@@ -103,7 +103,7 @@ class WebhooksController extends Controller
 {
    public function store(Request $request, string $driver)
    {
-       Receiver::driver($driver)
+       return Receiver::driver($driver)
            ->receive($request)
            ->ok();
    }
@@ -153,7 +153,7 @@ class WebhooksController extends Controller
 {
    public function store(Request $request, string $driver)
    {
-       Receiver::driver($driver)
+       return Receiver::driver($driver)
            ->receive($request)
            ->fallback(function(Webhook $webhook) {
                // Do whatever you like here...
