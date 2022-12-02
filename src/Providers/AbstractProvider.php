@@ -166,8 +166,6 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         $class = $this->getClass($event = $this->webhook->getEvent());
 
         if (class_exists($class)) {
-            $instance = new $class($event, $this->webhook->getData(), $this->webhook);
-
             $this->dispatched = $class::dispatchAfterResponse($event, $this->webhook->getData());
         }
 
