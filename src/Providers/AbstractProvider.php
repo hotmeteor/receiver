@@ -35,9 +35,9 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     protected Closure|null $fallback = null;
 
     /**
-     * @var mixed
+     * @var bool
      */
-    protected mixed $dispatched = null;
+    protected mixed $dispatched = false;
 
     /**
      * @var string
@@ -142,7 +142,7 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     public function dispatched(): bool
     {
-        return $this->dispatched !== null;
+        return $this->dispatched;
     }
 
     /**
