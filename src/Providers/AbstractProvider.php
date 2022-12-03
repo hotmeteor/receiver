@@ -4,7 +4,6 @@ namespace Receiver\Providers;
 
 use Closure;
 use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -36,9 +35,9 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     protected Closure|null $fallback = null;
 
     /**
-     * @var PendingDispatch|null
+     * @var mixed
      */
-    protected PendingDispatch|null $dispatched = null;
+    protected mixed $dispatched = null;
 
     /**
      * @var string
@@ -139,11 +138,11 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     }
 
     /**
-     * @return PendingDispatch|null
+     * @return bool
      */
-    public function dispatched(): ?PendingDispatch
+    public function dispatched(): bool
     {
-        return $this->dispatched;
+        return $this->dispatched !== null;
     }
 
     /**
@@ -166,7 +165,9 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         $class = $this->getClass($event = $this->webhook->getEvent());
 
         if (class_exists($class)) {
-            $this->dispatched = $class::dispatchAfterResponse($event, $this->webhook->getData());
+            $class::dispatchAfterResponse($event, $this->webhook->getData());
+
+            $this->dispatched = true;
         }
 
         return $this;

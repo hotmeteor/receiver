@@ -8,7 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Receiver\Providers\Webhook;
 
 class IssuesClosed implements ShouldQueue
 {
@@ -17,7 +16,7 @@ class IssuesClosed implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(public string $name, public array $data, public Webhook $webhook)
+    public function __construct(public string $name, public array $data)
     {
     }
 
