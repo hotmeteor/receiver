@@ -14,7 +14,7 @@ class GithubProvider extends AbstractProvider
      */
     public function verify(Request $request): bool
     {
-        $header = $request->header('HTTP_X_HUB_SIGNATURE_256');
+        $header = $request->header('X-Hub-Signature-256');
         $signature = hash_hmac('sha256', $request->getContent(), $this->secret);
 
         return hash_equals($header, $signature);
