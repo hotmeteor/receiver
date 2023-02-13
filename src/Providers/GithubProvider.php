@@ -17,7 +17,7 @@ class GithubProvider extends AbstractProvider
         $header = $request->header('X-Hub-Signature-256');
         $signature = hash_hmac('sha256', $request->getContent(), $this->secret);
 
-        return hash_equals(substr($header,7), $signature);
+        return hash_equals(substr($header, 7), $signature);
     }
 
     /**
