@@ -173,6 +173,8 @@ For example, a Stripe webhook handler would be `App\Http\Handlers\Stripe\Custome
 
 Each handler is constructed with the `event` (name of the webhook event) and `data` properties.
 
+Each handler must also use the `Dispatchable` trait.
+
 ```php
 <?php
 
