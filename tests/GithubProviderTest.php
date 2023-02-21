@@ -14,7 +14,7 @@ class GithubProviderTest extends TestCase
     {
         Log::partialMock()->shouldReceive('info')->never();
 
-        $signature = '5a84f1914825f5625cb82b1a894d7c6a8a851b7908f0134149b251b3b03880ed';
+        $signature = 'sha256=5a84f1914825f5625cb82b1a894d7c6a8a851b7908f0134149b251b3b03880ed';
 
         $request = Mockery::mock(Request::class);
         $this->signUsing($request, $signature);
@@ -35,7 +35,7 @@ class GithubProviderTest extends TestCase
     {
         Log::partialMock()->shouldReceive('info')->withArgs(['Webhook handled.'])->andReturnNull();
 
-        $signature = '5a84f1914825f5625cb82b1a894d7c6a8a851b7908f0134149b251b3b03880ed';
+        $signature = 'sha256=5a84f1914825f5625cb82b1a894d7c6a8a851b7908f0134149b251b3b03880ed';
 
         $request = Mockery::mock(Request::class);
         $this->signUsing($request, $signature);
@@ -63,7 +63,7 @@ class GithubProviderTest extends TestCase
     protected function signUsing(Request $request, string $signature): Request
     {
         $request->allows('getContent')->andReturns(json_encode($this->mockPayload()));
-        $request->allows('header')->with('HTTP_X_HUB_SIGNATURE_256')->andReturns($signature);
+        $request->allows('header')->with('X-Hub-Signature-256')->andReturns($signature);
 
         return $request;
     }
