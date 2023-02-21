@@ -24,6 +24,13 @@ class GenerateReceiver extends GeneratorCommand
     protected $description = 'Generate a custom Receiver provider.';
 
     /**
+     * The type of class being generated.
+     *
+     * @var string
+     */
+    protected $type = 'Receiver';
+
+    /**
      * @return string
      */
     protected function getStub(): string
