@@ -42,7 +42,7 @@ Of course, Receiver can receive webhooks from any source using [custom providers
 
 Requires:
 
-- PHP ^8.0
+- PHP ^8.1
 - Laravel 8+
 
 ```shell
