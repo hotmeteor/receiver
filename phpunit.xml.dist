@@ -10,7 +10,7 @@
          processIsolation="false"
          stopOnFailure="false"
 >
-    <coverage processUncoveredFiles="true">
+    <coverage>
         <include>
             <directory suffix=".php">src</directory>
         </include>
