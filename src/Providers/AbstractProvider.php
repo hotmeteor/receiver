@@ -166,13 +166,17 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     protected function handle(): static
     {
-        $events = Arr::wrap($this->webhook->getEvent());
+        $events = $this->webhook->getEvent();
 
-        foreach($events as $event) {
+        if(! is_array($events)) {
+            $events = [$events => $this->webhook->getData()];
+        }
+
+        foreach($events as $event => $data) {
             $class = $this->getClass($event);
 
             if (class_exists($class)) {
-                $class::dispatch($event, $this->webhook->getData());
+                $class::dispatch($event, $data);
 
                 $this->dispatchedEvents[] = $class;
             }

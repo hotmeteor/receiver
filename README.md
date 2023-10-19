@@ -346,7 +346,9 @@ The *`getData()`* method is used to return the payload of data that can be used 
 
 #### Receiving multiple events in a single webhook
 
-Sometimes the services will send multiple event payloads in a single webhook. In that case, you may return an array of events from the `getEvent` method and Receiver will handle them each individually.
+Sometimes the services will send multiple event payloads in a single webhook. 
+
+In this scenario you may return an array of mapped events from the `getEvent` method and Receiver will handle them each individually.
 
 For example, if the payload looks like this:
 ```json
@@ -371,10 +373,14 @@ You may return the events from the `getEvent` method like so:
 ```php
 public function getEvent(): array
 {
-    return [
-        'channel_occupied',
-        'member_added',
-    ];
+    return $events = $this->request
+            ->collect('events')
+            ->mapToGroups(
+              fn ($item) => [
+                  $item['name'] => $item
+              ]
+            )
+            ->toArray();
 }
 ```
 Receiver will then handle each event individually.
