@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Receiver\Contracts\Provider as ProviderContract;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,9 +36,9 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     protected Closure|null $fallback = null;
 
     /**
-     * @var bool
+     * @var array
      */
-    protected mixed $dispatched = false;
+    protected mixed $dispatchedEvents = [];
 
     /**
      * @var string
@@ -53,9 +54,9 @@ abstract class AbstractProvider implements ProviderContract, Responsable
 
     /**
      * @param Request $request
-     * @return string
+     * @return string|array
      */
-    abstract public function getEvent(Request $request): string;
+    abstract public function getEvent(Request $request): string|array;
 
     /**
      * @param Request $request
@@ -138,11 +139,14 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     }
 
     /**
+     * @param string|null $key
      * @return bool
      */
-    public function dispatched(): bool
+    public function dispatched(string $key = null): bool
     {
-        return $this->dispatched;
+        return $key
+            ? in_array($key, $this->dispatchedEvents)
+            : ! empty($this->dispatchedEvents);
     }
 
     /**
@@ -162,12 +166,20 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     protected function handle(): static
     {
-        $class = $this->getClass($event = $this->webhook->getEvent());
+        $events = $this->webhook->getEvent();
 
-        if (class_exists($class)) {
-            $class::dispatch($event, $this->webhook->getData());
+        if(! is_array($events)) {
+            $events = [$events => $this->webhook->getData()];
+        }
 
-            $this->dispatched = true;
+        foreach($events as $event => $data) {
+            $class = $this->getClass($event);
+
+            if (class_exists($class)) {
+                $class::dispatch($event, $data);
+
+                $this->dispatchedEvents[] = $class;
+            }
         }
 
         return $this;

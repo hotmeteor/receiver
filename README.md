@@ -344,6 +344,47 @@ The *`getEvent()`* method is used to return the name of the webhook event, ie. `
 
 The *`getData()`* method is used to return the payload of data that can be used within your handler. By default this is set to `$request->all()`.
 
+#### Receiving multiple events in a single webhook
+
+Sometimes the services will send multiple event payloads in a single webhook. 
+
+In this scenario you may return an array of mapped events from the `getEvent` method and Receiver will handle them each individually.
+
+For example, if the payload looks like this:
+```json
+{
+    "time_ms": 1697717045179,
+    "events": [
+        {
+            "name": "channel_occupied",
+            "channel": "admin",
+            "data": {}
+        },
+        {
+            "name": "member_added",
+            "channel": "admin",
+            "data": {}
+        }
+    ]
+}
+```
+
+You may return the events from the `getEvent` method like so:
+```php
+public function getEvent(): array
+{
+    return $events = $this->request
+            ->collect('events')
+            ->mapToGroups(
+              fn ($item) => [
+                  $item['name'] => $item
+              ]
+            )
+            ->toArray();
+}
+```
+Receiver will then handle each event individually.
+
 ### Securing Webhooks
 
 Many webhooks have ways of verifying their authenticity as they are received, most commonly through signatures or basic authentication. No matter the strategy, Receiver allows you to write custom verification code as necessary. Simply implement the `verify` method in your provider and return true or false if it passes.
