@@ -193,7 +193,7 @@ abstract class AbstractProvider implements ProviderContract, Responsable
      */
     protected function prepareHandlerClassname(string $event): string
     {
-        return (string) Str::of($event)->replaceMatches('/[^A-Za-z0-9]++/', ' ')->studly();
+        return (string) Str::of($event)->lower()->replaceMatches('/[^A-Za-z0-9]++/', ' ')->studly();
     }
 
     /**
