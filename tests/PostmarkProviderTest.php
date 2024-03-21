@@ -63,6 +63,26 @@ class PostmarkProviderTest extends TestCase
         $provider->receive($request);
     }
 
+    public function test_it_will_deny_postmark_webhook_with_invalid_headers()
+    {
+        Config::set('receiver.postmark.verification_types', ['headers']);
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Unauthorized');
+
+        $request = Mockery::mock(Request::class);
+
+        $this->setupBaseRequest($request);
+
+        $request->allows('hasHeader')->with('foo')->andReturns(true);
+        $request->allows('header')->with('foo')->andReturns('baz');
+
+        $request->allows('hasHeader')->with('foo')->andReturns(false);
+
+        $provider = new PostmarkProvider;
+        $provider->receive($request);
+    }
+
     public function test_it_will_verify_postmark_webhook_with_valid_ip()
     {
         Config::set('receiver.postmark.verification_types', ['ips']);
