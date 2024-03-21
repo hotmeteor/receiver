@@ -15,13 +15,37 @@ class PostmarkProvider extends AbstractProvider
      */
     public function verify(Request $request): bool
     {
-        try {
-            Auth::onceBasic();
+        foreach (config('receiver.postmark.verification_types') as $verification_type) {
+            switch ($verification_type) {
+                case 'auth':
+                    try {
+                        Auth::onceBasic();
+                    } catch (\Exception $exception) {
+                        return false;
+                    }
+                    break;
 
-            return true;
-        } catch (\Exception $exception) {
-            return false;
+                case 'headers':
+                    foreach (config('receiver.postmark.headers') as $key => $value) {
+                        if (!$request->hasHeader($key)) {
+                            return false;
+                        }
+
+                        if ($request->header($key) !== $value) {
+                            return false;
+                        }
+                    }
+                    break;
+
+                case 'ips':
+                    if (!in_array($request->getClientIp(), config('receiver.postmark.ips'), true)) {
+                        return false;
+                    }
+                    break;
+            }
         }
+
+        return true;
     }
 
     /**
