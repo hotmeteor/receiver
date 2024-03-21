@@ -23,6 +23,7 @@ Of course, Receiver can receive webhooks from any source using [custom providers
 ## Table of Contents
 
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Receiving Webhooks](#receiving-webhooks)
     - [The Basics](#the-basics)
     - [Receiving from multiple apps](#receiving-from-multiple-apps)
@@ -52,6 +53,22 @@ composer require hotmeteor/receiver
 Optional:
 
 **Stripe** support requires [`stripe/stripe-php`](https://github.com/stripe/stripe-php)
+
+## Configuration
+
+Currently, configuration is only supported for the Postmark provider. To publish the configuration to your Laravel app, run this command:
+
+```shell
+php artisan vendor:publish --provider="Receiver\ReceiverServiceProvider"
+```
+
+A new config called `receiver.php` will be created in the `config` directory.
+
+For Postmark provider, there are three different verification types are available.
+
+1. `auth` - Perform verification via the HTTP authentication.
+2. `headers` - Perform verification based on the predefined key-value pair of expected headers in the config. Additional headers for the webhook can be configured directly in the Postmark dashboard.
+3. `ips` - Perform verification based on the IP addresses in the allow-list. By default, [these IP addresses](https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks) are added to the allow-list.
 
 ## Receiving Webhooks
 
