@@ -26,6 +26,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'redirect' => 'http://your-callback-url',
             'webhook_secret' => 'slack-webhook-secret',
         ]);
+
+        $app['config']->set('services.postmark.webhook', [
+            'headers' => [
+                'User-Agent' => 'Postmark',
+                'foo'        => 'bar',
+            ],
+            'ips' => [
+                '123.123.123.123',
+            ],
+        ]);
     }
 
     /**

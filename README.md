@@ -23,6 +23,7 @@ Of course, Receiver can receive webhooks from any source using [custom providers
 ## Table of Contents
 
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Receiving Webhooks](#receiving-webhooks)
     - [The Basics](#the-basics)
     - [Receiving from multiple apps](#receiving-from-multiple-apps)
@@ -52,6 +53,42 @@ composer require hotmeteor/receiver
 Optional:
 
 **Stripe** support requires [`stripe/stripe-php`](https://github.com/stripe/stripe-php)
+
+## Configuration
+
+Currently, configuration is only supported for the Postmark provider. To configure the Postmark integration, modify the `config/services.php` file.
+
+Add a new key called `webhook` for `postmark` configuration, and it should look like this after the modification.
+
+```
+'postmark' => [
+    'token' => env('POSTMARK_TOKEN'),
+    'webhook' => [
+        'verification_types' => [
+            'auth',
+            'headers',
+            'ips',
+        ],
+
+        'headers' => [
+            'User-Agent' => 'Postmark',
+        ],
+
+        'ips' => [
+            '3.134.147.250',
+            '50.31.156.6',
+            '50.31.156.77',
+            '18.217.206.57',
+        ],
+    ],
+],
+```
+
+For Postmark provider, there are three different verification types are available. These checks will be run sequentially based on how they are defined in the configuration.
+
+1. `auth` - Perform verification via the HTTP authentication.
+2. `headers` - Perform verification based on the predefined key-value pair of expected headers in the config. Additional headers for the webhook can be configured directly in the Postmark dashboard.
+3. `ips` - Perform verification based on the IP addresses in the allow-list. By default, [these IP addresses](https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks) are added to the allow-list.
 
 ## Receiving Webhooks
 
