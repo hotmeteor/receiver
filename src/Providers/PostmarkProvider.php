@@ -15,7 +15,7 @@ class PostmarkProvider extends AbstractProvider
      */
     public function verify(Request $request): bool
     {
-        foreach (config('receiver.postmark.verification_types') as $verification_type) {
+        foreach (config('services.postmark.webhook.verification_types') ?? [] as $verification_type) {
             switch ($verification_type) {
                 case 'auth':
                     try {
@@ -26,7 +26,7 @@ class PostmarkProvider extends AbstractProvider
                     break;
 
                 case 'headers':
-                    foreach (config('receiver.postmark.headers') as $key => $value) {
+                    foreach (config('services.postmark.webhook.headers') ?? [] as $key => $value) {
                         if (!$request->hasHeader($key)) {
                             return false;
                         }
@@ -38,7 +38,7 @@ class PostmarkProvider extends AbstractProvider
                     break;
 
                 case 'ips':
-                    if (!in_array($request->getClientIp(), config('receiver.postmark.ips'), true)) {
+                    if (!in_array($request->getClientIp(), config('services.postmark.webhook.ips') ?? [], true)) {
                         return false;
                     }
                     break;

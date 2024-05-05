@@ -13,7 +13,7 @@ class PostmarkProviderTest extends TestCase
 {
     public function test_it_will_not_verify_postmark_webhook_when_no_verification_types_is_set()
     {
-        Config::set('receiver.postmark.verification_types', []);
+        Config::set('services.postmark.webhook.verification_types', []);
 
         $request = Mockery::mock(Request::class);
 
@@ -29,7 +29,7 @@ class PostmarkProviderTest extends TestCase
 
     public function test_it_will_verify_postmark_webhook_with_valid_headers()
     {
-        Config::set('receiver.postmark.verification_types', ['headers']);
+        Config::set('services.postmark.webhook.verification_types', ['headers']);
 
         $request = Mockery::mock(Request::class);
 
@@ -48,7 +48,7 @@ class PostmarkProviderTest extends TestCase
 
     public function test_it_will_deny_postmark_webhook_with_missing_headers()
     {
-        Config::set('receiver.postmark.verification_types', ['headers']);
+        Config::set('services.postmark.webhook.verification_types', ['headers']);
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized');
@@ -65,7 +65,7 @@ class PostmarkProviderTest extends TestCase
 
     public function test_it_will_deny_postmark_webhook_with_invalid_headers()
     {
-        Config::set('receiver.postmark.verification_types', ['headers']);
+        Config::set('services.postmark.webhook.verification_types', ['headers']);
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized');
@@ -85,7 +85,7 @@ class PostmarkProviderTest extends TestCase
 
     public function test_it_will_verify_postmark_webhook_with_valid_ip()
     {
-        Config::set('receiver.postmark.verification_types', ['ips']);
+        Config::set('services.postmark.webhook.verification_types', ['ips']);
 
         $request = Mockery::mock(Request::class);
 
@@ -103,7 +103,7 @@ class PostmarkProviderTest extends TestCase
 
     public function test_it_will_deny_postmark_webhook_with_invalid_ip()
     {
-        Config::set('receiver.postmark.verification_types', ['ips']);
+        Config::set('services.postmark.webhook.verification_types', ['ips']);
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized');

@@ -30,10 +30,6 @@ class ReceiverServiceProvider extends ServiceProvider implements DeferrableProvi
                 GenerateReceiver::class,
             ]);
         }
-
-        $this->publishes([
-            __DIR__.'/../config/receiver.php' => config_path('receiver.php'),
-        ]);
     }
 
     /**

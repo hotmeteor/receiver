@@ -56,15 +56,35 @@ Optional:
 
 ## Configuration
 
-Currently, configuration is only supported for the Postmark provider. To publish the configuration to your Laravel app, run this command:
+Currently, configuration is only supported for the Postmark provider. To configure the Postmark integration, modify the `config/services.php` file.
 
-```shell
-php artisan vendor:publish --provider="Receiver\ReceiverServiceProvider"
+Add a new key called `webhook` for `postmark` configuration, and it should look like this after the modification.
+
+```
+'postmark' => [
+    'token' => env('POSTMARK_TOKEN'),
+    'webhook' => [
+        'verification_types' => [
+            'auth',
+            'headers',
+            'ips',
+        ],
+
+        'headers' => [
+            'User-Agent' => 'Postmark',
+        ],
+
+        'ips' => [
+            '3.134.147.250',
+            '50.31.156.6',
+            '50.31.156.77',
+            '18.217.206.57',
+        ],
+    ],
+],
 ```
 
-A new config called `receiver.php` will be created in the `config` directory.
-
-For Postmark provider, there are three different verification types are available.
+For Postmark provider, there are three different verification types are available. These checks will be run sequentially based on how they are defined in the configuration.
 
 1. `auth` - Perform verification via the HTTP authentication.
 2. `headers` - Perform verification based on the predefined key-value pair of expected headers in the config. Additional headers for the webhook can be configured directly in the Postmark dashboard.

@@ -27,7 +27,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'webhook_secret' => 'slack-webhook-secret',
         ]);
 
-        $app['config']->set('receiver.postmark', [
+        $app['config']->set('services.postmark.webhook', [
             'headers' => [
                 'User-Agent' => 'Postmark',
                 'foo'        => 'bar',
