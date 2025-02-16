@@ -2,57 +2,58 @@ name: Tests
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: true
       matrix:
-        laravel: [ 10.*, 11.* ]
-        php: [ 8.2, 8.3 ]
+        laravel: ['10.*', '11.*', '12.*']
+        php: [8.2, 8.3]
         include:
           - laravel: 10.*
             testbench: 8.*
           - laravel: 11.*
             testbench: 9.*
+          - laravel: 12.*
+            testbench: 10.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }}
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-${{ matrix.php }}--${{ matrix.laravel }}--node-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ matrix.php }}--${{ matrix.laravel }}-node-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{ matrix.php }}--${{ matrix.laravel }}--node-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.php }}--${{ matrix.laravel }}-node-
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        extensions: dom, fileinfo, libxml, mbstring
-        coverage: none
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, fileinfo, libxml, mbstring
+          coverage: none
 
-    - name: Install dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: |
-        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-        composer update --prefer-dist --no-progress --no-suggest
+      - name: Install dependencies
+        if: "steps.composer-cache.outputs.cache-hit != 'true'"
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --prefer-dist --no-progress --no-suggest
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    - name: Run test suite
-      run: composer run-script test
+      - name: Run test suite
+        run: composer run-script test
