@@ -20,7 +20,7 @@
     },
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^10.0|^11.0"
+        "illuminate/support": ">= 10.0"
     },
     "require-dev": {
         "nunomaduro/collision": "^7.0|^8.0",
