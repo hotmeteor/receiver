@@ -66,6 +66,9 @@ jobs:
           # Laravel 10 was released before PHP 8.4
           - laravel: '10.*'
             php: '8.4'
+          # Laravel 13 requires PHP ^8.3
+          - laravel: '13.*'
+            php: '8.2'
 
     steps:
       - uses: actions/checkout@v4
@@ -92,7 +95,7 @@ jobs:
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer require --dev "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run test suite
