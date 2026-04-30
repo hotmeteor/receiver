@@ -8,9 +8,6 @@ class GithubProvider extends AbstractProvider
 {
     /**
      * https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks.
-     *
-     * @param Request $request
-     * @return bool
      */
     public function verify(Request $request): bool
     {
@@ -21,7 +18,6 @@ class GithubProvider extends AbstractProvider
     }
 
     /**
-     * @param Request $request
      * @return string
      */
     public function getEvent(Request $request): string|array

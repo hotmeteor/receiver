@@ -3,10 +3,11 @@
 namespace Receiver;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Receiver\Facades\Receiver;
 
 /**
- * @mixin \Illuminate\Routing\Controller
+ * @mixin Controller
  */
 trait ReceivesWebhooks
 {

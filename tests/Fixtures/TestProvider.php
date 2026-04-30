@@ -7,28 +7,16 @@ use Receiver\Providers\AbstractProvider;
 
 class TestProvider extends AbstractProvider
 {
-    /**
-     * @param Request $request
-     * @return string|array
-     */
     public function getEvent(Request $request): string|array
     {
         return $request->input('event');
     }
 
-    /**
-     * @param Request $request
-     * @return array
-     */
     public function getData(Request $request): array
     {
         return $request->input('data');
     }
 
-    /**
-     * @param string $event
-     * @return string
-     */
     protected function getClass(string $event): string
     {
         $className = $this->prepareHandlerClassname($event);

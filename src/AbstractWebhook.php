@@ -10,36 +10,24 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
     /**
      * The normalized name of the webhook event. May be an array of [event => data]
      * pairs when the provider returns multiple events in a single payload.
-     *
-     * @var string|array|null
      */
     public string|array|null $event = null;
 
     /**
      * The payload of the webhook event.
-     *
-     * @var array
      */
     public array $data = [];
 
     /**
      * The webhook's raw attributes.
-     *
-     * @var array
      */
     public array $webhook = [];
 
-    /**
-     * @return string|array
-     */
     public function getEvent(): string|array
     {
         return $this->event ?? '';
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
@@ -47,8 +35,6 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
 
     /**
      * Get the raw webhook array.
-     *
-     * @return array
      */
     public function getRaw(): array
     {
@@ -58,7 +44,6 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
     /**
      * Set the raw webhook array from the provider.
      *
-     * @param  array  $webhook
      * @return $this
      */
     public function setRaw(array $webhook): static
@@ -71,7 +56,6 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
     /**
      * Map the given array onto the webhook's properties.
      *
-     * @param  array  $attributes
      * @return $this
      */
     public function map(array $attributes): static
@@ -87,7 +71,6 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
      * Determine if the given raw webhook attribute exists.
      *
      * @param  string  $offset
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -98,7 +81,6 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
      * Get the given key from the raw webhook.
      *
      * @param  string  $offset
-     * @return mixed
      */
     public function offsetGet($offset): mixed
     {
@@ -109,8 +91,6 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
      * Set the given attribute on the raw webhook array.
      *
      * @param  string  $offset
-     * @param  mixed  $value
-     * @return void
      */
     public function offsetSet($offset, mixed $value): void
     {
@@ -121,7 +101,6 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
      * Unset the given value from the raw webhook array.
      *
      * @param  string  $offset
-     * @return void
      */
     public function offsetUnset($offset): void
     {

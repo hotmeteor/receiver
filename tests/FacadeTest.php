@@ -12,7 +12,7 @@ class FacadeTest extends TestCase
     #[Test]
     public function ide_helpers(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         $receiver = Receiver::driver('fake')->receive($request);
 

@@ -86,7 +86,7 @@ class HubspotProviderTest extends TestCase
         $this->assertEquals('contact.creation', $provider->getEvent($request));
     }
 
-    protected function mockPayload(string $key = null): mixed
+    protected function mockPayload(?string $key = null): mixed
     {
         $data = [
             'eventType' => 'contact.creation',

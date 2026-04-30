@@ -14,53 +14,23 @@ abstract class AbstractProvider implements ProviderContract, Responsable
 {
     /**
      * The cached webhook instance.
-     *
-     * @var Webhook|null
      */
-    protected Webhook|null $webhook = null;
+    protected ?Webhook $webhook = null;
 
-    /**
-     * @var Request|null
-     */
-    protected Request|null $request = null;
+    protected ?Request $request = null;
 
-    /**
-     * @var mixed
-     */
     protected mixed $response = null;
 
-    /**
-     * @var Closure|null
-     */
-    protected Closure|null $fallback = null;
+    protected ?Closure $fallback = null;
 
-    /**
-     * @var array
-     */
     protected array $dispatchedEvents = [];
 
-    /**
-     * @var string
-     */
     protected string $handlerNamespace = '\\App\\Http\\Handlers';
 
-    /**
-     * @param string|null $secret
-     */
-    public function __construct(protected ?string $secret = null)
-    {
-    }
+    public function __construct(protected ?string $secret = null) {}
 
-    /**
-     * @param Request $request
-     * @return string|array
-     */
     abstract public function getEvent(Request $request): string|array;
 
-    /**
-     * @param Request $request
-     * @return array
-     */
     public function getData(Request $request): array
     {
         return $request->all();
@@ -69,7 +39,6 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     /**
      * Set the scopes of the requested access.
      *
-     * @param Request $request
      * @return $this
      */
     public function receive(Request $request): static
@@ -95,9 +64,6 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         return $this;
     }
 
-    /**
-     * @return JsonResponse|Response
-     */
     public function ok(): JsonResponse|Response
     {
         if (! $this->dispatched() && $this->fallback) {
@@ -110,7 +76,6 @@ abstract class AbstractProvider implements ProviderContract, Responsable
     }
 
     /**
-     * @param Closure $closure
      * @return $this
      */
     public function fallback(Closure $closure): static
@@ -120,49 +85,34 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         return $this;
     }
 
-    /**
-     * @param $request
-     * @return JsonResponse|Response
-     */
     public function toResponse($request): JsonResponse|Response
     {
         return response()->json($this->response, 200);
     }
 
-    /**
-     * @return Webhook|null
-     */
     public function webhook(): ?Webhook
     {
         return $this->webhook;
     }
 
     /**
-     * @param string|null $key Handler class name to check (e.g. MyHandler::class)
-     * @return bool
+     * @param  string|null  $key  Handler class name to check (e.g. MyHandler::class)
      */
-    public function dispatched(string $key = null): bool
+    public function dispatched(?string $key = null): bool
     {
         return $key
             ? in_array($key, $this->dispatchedEvents)
             : ! empty($this->dispatchedEvents);
     }
 
-    /**
-     * @param Request $request
-     * @return Webhook
-     */
     protected function mapWebhook(Request $request): Webhook
     {
-        return (new Webhook())->setRaw($request->all())->map([
+        return (new Webhook)->setRaw($request->all())->map([
             'event' => $this->getEvent($request),
             'data' => $this->getData($request),
         ]);
     }
 
-    /**
-     * @return AbstractProvider
-     */
     protected function handle(): static
     {
         $events = $this->webhook->getEvent();
@@ -184,10 +134,6 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         return $this;
     }
 
-    /**
-     * @param string $event
-     * @return string
-     */
     protected function getClass(string $event): string
     {
         $className = $this->prepareHandlerClassname($event);
@@ -198,25 +144,17 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         return implode('\\', [$basepath, $driverName, $className]);
     }
 
-    /**
-     * @param string $event
-     * @return string
-     */
     protected function prepareHandlerClassname(string $event): string
     {
         return (string) Str::of($event)->lower()->replaceMatches('/[^A-Za-z0-9]++/', ' ')->studly();
     }
 
-    /**
-     * @return string
-     */
     protected function prepareDriverClassname(): string
     {
         return Str::replace('Provider', '', class_basename(static::class));
     }
 
     /**
-     * @param string $namespace
      * @return $this
      */
     public function setHandlerNamespace(string $namespace): static
@@ -226,9 +164,6 @@ abstract class AbstractProvider implements ProviderContract, Responsable
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getHandlerNamespace(): string
     {
         return $this->handlerNamespace;

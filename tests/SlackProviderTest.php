@@ -90,7 +90,7 @@ class SlackProviderTest extends TestCase
     /**
      * https://api.slack.com/apis/connections/events-api#the-events-api__receiving-events__event-type-structure.
      */
-    protected function mockPayload(string $key = null): mixed
+    protected function mockPayload(?string $key = null): mixed
     {
         $data = [
             'token' => 'z26uFbvR1xHJEdHE1OQiO6t8',

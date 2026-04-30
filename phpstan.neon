@@ -1,0 +1,7 @@
+parameters:
+    paths:
+        - src/
+    level: 5
+    ignoreErrors:
+        # Traits are not analysed when unused within the package itself
+        - '#Trait Receiver\\ReceivesWebhooks is used zero times#'

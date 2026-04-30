@@ -3,23 +3,17 @@
 namespace Receiver\Providers;
 
 use Illuminate\Http\Request;
+use Stripe\Webhook;
 
 class StripeProvider extends AbstractProvider
 {
-    /**
-     * @param Request $request
-     * @return array|null
-     */
-    public function handshake(Request $request): array|null
+    public function handshake(Request $request): ?array
     {
         return $request->has('challenge') ? $request->only('challenge') : null;
     }
 
     /**
      * https://stripe.com/docs/webhooks/signatures#verify-official-libraries.
-     *
-     * @param  Request  $request
-     * @return bool
      */
     public function verify(Request $request): bool
     {
@@ -27,7 +21,7 @@ class StripeProvider extends AbstractProvider
         $signature = $request->header('STRIPE_SIGNATURE');
 
         try {
-            \Stripe\Webhook::constructEvent(
+            Webhook::constructEvent(
                 $payload,
                 $signature,
                 $this->secret
@@ -40,7 +34,6 @@ class StripeProvider extends AbstractProvider
     }
 
     /**
-     * @param Request $request
      * @return string
      */
     public function getEvent(Request $request): string|array
@@ -48,10 +41,6 @@ class StripeProvider extends AbstractProvider
         return $request->input('type');
     }
 
-    /**
-     * @param Request $request
-     * @return array
-     */
     public function getData(Request $request): array
     {
         return $request->input('data');

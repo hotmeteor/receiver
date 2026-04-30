@@ -69,7 +69,7 @@ class GithubProviderTest extends TestCase
     /**
      * https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#example-delivery.
      */
-    protected function mockPayload(string $key = null): mixed
+    protected function mockPayload(?string $key = null): mixed
     {
         $data = [
             [

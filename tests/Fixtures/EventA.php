@@ -8,11 +8,7 @@ class EventA
 {
     use Dispatchable;
 
-    public function __construct(public string $event, public array $data)
-    {
-    }
+    public function __construct(public string $event, public array $data) {}
 
-    public function handle(): void
-    {
-    }
+    public function handle(): void {}
 }

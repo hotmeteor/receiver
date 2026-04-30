@@ -6,20 +6,13 @@ use Illuminate\Http\Request;
 
 class SlackProvider extends AbstractProvider
 {
-    /**
-     * @param Request $request
-     * @return array|null
-     */
-    public function handshake(Request $request): array|null
+    public function handshake(Request $request): ?array
     {
         return $request->has('challenge') ? $request->only('challenge') : null;
     }
 
     /**
      * https://api.slack.com/authentication/verifying-requests-from-slack#verifying-requests-from-slack-using-signing-secrets__a-recipe-for-security__step-by-step-walk-through-for-validating-a-request.
-     *
-     * @param  Request  $request
-     * @return bool
      */
     public function verify(Request $request): bool
     {
@@ -37,7 +30,6 @@ class SlackProvider extends AbstractProvider
     }
 
     /**
-     * @param Request $request
      * @return string
      */
     public function getEvent(Request $request): string|array

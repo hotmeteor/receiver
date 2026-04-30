@@ -8,7 +8,6 @@ use Receiver\ReceiverServiceProvider;
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     /**
-     * @param $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)

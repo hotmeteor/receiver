@@ -91,7 +91,7 @@ class StripeProviderTest extends TestCase
         $this->assertEquals(['object' => ['id' => 'cus_123']], $provider->getData($request));
     }
 
-    protected function mockPayload(string $key = null): mixed
+    protected function mockPayload(?string $key = null): mixed
     {
         $data = [
             'type' => 'customer.created',

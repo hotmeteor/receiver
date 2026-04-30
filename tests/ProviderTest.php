@@ -15,7 +15,7 @@ class ProviderTest extends TestCase
     {
         $request = new Request($this->mockPayload());
 
-        $provider = new TestProvider();
+        $provider = new TestProvider;
 
         $response = $provider
             ->receive($request)
@@ -35,7 +35,7 @@ class ProviderTest extends TestCase
 
         $request = new Request($payload);
 
-        $provider = new TestProvider();
+        $provider = new TestProvider;
 
         $response = $provider
             ->receive($request)
@@ -55,7 +55,7 @@ class ProviderTest extends TestCase
 
         $request = new Request(['event' => $events, 'data' => []]);
 
-        $provider = new TestProvider();
+        $provider = new TestProvider;
 
         $response = $provider
             ->receive($request)
@@ -76,7 +76,7 @@ class ProviderTest extends TestCase
 
         $request = new Request($payload);
 
-        $provider = new TestProvider();
+        $provider = new TestProvider;
 
         $response = $provider
             ->receive($request)
@@ -86,7 +86,7 @@ class ProviderTest extends TestCase
         $this->assertTrue($provider->dispatched());
     }
 
-    protected function mockPayload(string $key = null): mixed
+    protected function mockPayload(?string $key = null): mixed
     {
         $payload = [
             'event' => 'foo.barred',

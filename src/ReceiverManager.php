@@ -23,9 +23,6 @@ class ReceiverManager extends Manager implements Factory
 {
     /**
      * Get a driver instance.
-     *
-     * @param string $driver
-     * @return mixed
      */
     public function with(string $driver): mixed
     {
@@ -166,11 +163,12 @@ class ReceiverManager extends Manager implements Factory
     /**
      * Build a webhook provider instance.
      *
-     * @param string $provider
-     * @param array $config
-     * @return AbstractProvider
+     * @template T of AbstractProvider
+     *
+     * @param  class-string<T>  $provider
+     * @return T
      */
-    public function buildProvider(string $provider, array $config): Providers\AbstractProvider
+    public function buildProvider(string $provider, array $config): AbstractProvider
     {
         return new $provider(
             Arr::get($config, 'webhook_secret')
@@ -194,7 +192,7 @@ class ReceiverManager extends Manager implements Factory
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getDefaultDriver()
     {

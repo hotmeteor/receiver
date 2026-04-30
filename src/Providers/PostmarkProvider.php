@@ -19,9 +19,6 @@ class PostmarkProvider extends AbstractProvider
      *   - 'ips'     Verify that the request originates from an allowed IP address
      *
      * https://postmarkapp.com/developer/webhooks/webhooks-overview#protecting-your-webhook.
-     *
-     * @param  Request  $request
-     * @return bool
      */
     public function verify(Request $request): bool
     {
@@ -54,7 +51,6 @@ class PostmarkProvider extends AbstractProvider
     }
 
     /**
-     * @param Request $request
      * @return string
      */
     public function getEvent(Request $request): string|array

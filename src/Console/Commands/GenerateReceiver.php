@@ -30,9 +30,6 @@ class GenerateReceiver extends GeneratorCommand
      */
     protected $type = 'Receiver';
 
-    /**
-     * @return string
-     */
     protected function getStub(): string
     {
         return ! $this->option('verified')
@@ -43,8 +40,9 @@ class GenerateReceiver extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
+     *
      * @throws FileNotFoundException
      */
     protected function buildClass($name)
@@ -70,7 +68,7 @@ class GenerateReceiver extends GeneratorCommand
     /**
      * Get the destination class path.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
      */
     protected function getPath($name)
@@ -102,6 +100,8 @@ class GenerateReceiver extends GeneratorCommand
         if ($this->option('provider')) {
             $this->generateServiceProvider();
         }
+
+        return null;
     }
 
     protected function generateServiceProvider(): void
