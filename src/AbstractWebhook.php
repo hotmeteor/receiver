@@ -8,11 +8,12 @@ use Receiver\Contracts\Webhook;
 abstract class AbstractWebhook implements ArrayAccess, Webhook
 {
     /**
-     * The normalized name of the webhook event.
+     * The normalized name of the webhook event. May be an array of [event => data]
+     * pairs when the provider returns multiple events in a single payload.
      *
-     * @var string|null
+     * @var string|array|null
      */
-    public string|null $event = null;
+    public string|array|null $event = null;
 
     /**
      * The payload of the webhook event.
@@ -29,9 +30,9 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
     public array $webhook = [];
 
     /**
-     * @return string
+     * @return string|array
      */
-    public function getEvent(): string
+    public function getEvent(): string|array
     {
         return $this->event ?? '';
     }

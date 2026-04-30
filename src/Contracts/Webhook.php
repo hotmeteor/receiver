@@ -5,9 +5,9 @@ namespace Receiver\Contracts;
 interface Webhook
 {
     /**
-     * @return string
+     * @return string|array
      */
-    public function getEvent(): string;
+    public function getEvent(): string|array;
 
     /**
      * @return array

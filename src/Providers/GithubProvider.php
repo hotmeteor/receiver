@@ -24,7 +24,7 @@ class GithubProvider extends AbstractProvider
      * @param Request $request
      * @return string
      */
-    public function getEvent(Request $request): string
+    public function getEvent(Request $request): string|array
     {
         return implode('_', array_filter([$request->header('X-GitHub-Event'), $request->input('action')]));
     }

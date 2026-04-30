@@ -36,7 +36,7 @@ class HubspotProvider extends AbstractProvider
      * @param  Request  $request
      * @return string
      */
-    public function getEvent(Request $request): string
+    public function getEvent(Request $request): string|array
     {
         return $request->input('eventType');
     }

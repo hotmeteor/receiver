@@ -42,6 +42,45 @@ class ProviderTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    public function test_handles_multiple_events_in_single_payload()
+    {
+        $events = [
+            'event_a' => ['id' => 1],
+            'event_b' => ['id' => 2],
+        ];
+
+        $request = new Request(['event' => $events, 'data' => []]);
+
+        $provider = new TestProvider();
+
+        $response = $provider
+            ->receive($request)
+            ->ok();
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertTrue($provider->dispatched());
+        $this->assertTrue($provider->dispatched(Fixtures\EventA::class));
+        $this->assertTrue($provider->dispatched(Fixtures\EventB::class));
+    }
+
+    public function test_handler_class_resolved_case_insensitively()
+    {
+        // 'FOO.BARRED' and 'foo.barred' must resolve to the same class
+        $payload = $this->mockPayload();
+        data_set($payload, 'event', 'FOO.BARRED');
+
+        $request = new Request($payload);
+
+        $provider = new TestProvider();
+
+        $response = $provider
+            ->receive($request)
+            ->ok();
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertTrue($provider->dispatched());
+    }
+
     protected function mockPayload(string $key = null): mixed
     {
         $payload = [

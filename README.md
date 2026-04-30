@@ -23,6 +23,7 @@ Of course, Receiver can receive webhooks from any source using [custom providers
 ## Table of Contents
 
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Receiving Webhooks](#receiving-webhooks)
     - [The Basics](#the-basics)
     - [Receiving from multiple apps](#receiving-from-multiple-apps)
@@ -32,6 +33,7 @@ Of course, Receiver can receive webhooks from any source using [custom providers
 - [Extending Receiver](#extending-receiver)
     - [Adding custom providers](#adding-custom-providers)
     - [Defining attributes](#defining-attributes)
+    - [Receiving multiple events in a single webhook](#receiving-multiple-events-in-a-single-webhook)
     - [Securing webhooks](#securing-webhooks)
     - [Handshakes](#handshakes)
 - [Community Receivers](#share-your-receivers)
@@ -52,6 +54,78 @@ composer require hotmeteor/receiver
 Optional:
 
 **Stripe** support requires [`stripe/stripe-php`](https://github.com/stripe/stripe-php)
+
+## Configuration
+
+Each provider reads its signing secret from `config/services.php`. Add the relevant entry for each webhook source you intend to receive.
+
+**GitHub**
+```php
+'github' => [
+    'webhook_secret' => env('GITHUB_WEBHOOK_SECRET'),
+],
+```
+
+**HubSpot**
+```php
+'hubspot' => [
+    'webhook_secret' => env('HUBSPOT_WEBHOOK_SECRET'),
+],
+```
+
+**Slack**
+```php
+'slack' => [
+    'webhook_secret' => env('SLACK_WEBHOOK_SECRET'),
+],
+```
+
+**Stripe**
+```php
+'stripe' => [
+    'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+],
+```
+
+**Postmark**
+
+Postmark offers several verification strategies. Configure which ones to apply (and in what order) under the `webhook` key:
+
+```php
+'postmark' => [
+    'token' => env('POSTMARK_TOKEN'),
+    'webhook' => [
+        // Choose one or more: 'auth', 'headers', 'ips'
+        'verification_types' => ['headers', 'ips'],
+
+        // Used when 'headers' is in verification_types.
+        // Specify header name => expected value pairs.
+        'headers' => [
+            'X-Custom-Header' => env('POSTMARK_WEBHOOK_HEADER'),
+        ],
+
+        // Used when 'ips' is in verification_types.
+        // Postmark's official webhook IPs:
+        // https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
+        'ips' => [
+            '3.134.147.250',
+            '50.31.156.6',
+            '50.31.156.77',
+            '18.217.206.57',
+        ],
+    ],
+],
+```
+
+Available `verification_types`:
+
+| Type | Description |
+|------|-------------|
+| `auth` | HTTP Basic Auth via `Auth::onceBasic()` |
+| `headers` | Validates that specific request headers match expected values |
+| `ips` | Validates that the request originates from an allowed IP address |
+
+If `verification_types` is empty or not set, all Postmark requests are accepted without verification.
 
 ## Receiving Webhooks
 
@@ -322,9 +396,9 @@ class CustomProvider extends AbstractProvider
 {
     /**
      * @param Request $request
-     * @return string
+     * @return string|array
      */
-    public function getEvent(Request $request): string
+    public function getEvent(Request $request): string|array
     {
         return $request->input('event.name');
     }
@@ -343,6 +417,42 @@ class CustomProvider extends AbstractProvider
 The *`getEvent()`* method is used to return the name of the webhook event, ie. `customer.created`.
 
 The *`getData()`* method is used to return the payload of data that can be used within your handler. By default this is set to `$request->all()`.
+
+### Receiving Multiple Events in a Single Webhook
+
+Some services send more than one event per request. Receiver supports this by allowing `getEvent()` to return an array of `['event_name' => $eventData]` pairs instead of a single string.
+
+When an array is returned, Receiver will dispatch a separate handler for each event:
+
+```php
+<?php
+
+namespace Receiver\Providers;
+
+use Illuminate\Http\Request;
+
+class CustomProvider extends AbstractProvider
+{
+    /**
+     * @param Request $request
+     * @return string|array
+     */
+    public function getEvent(Request $request): string|array
+    {
+        // Single event — return a string as normal
+        // return $request->input('event.name');
+
+        // Multiple events — return an array of ['event_name' => $eventData]
+        $events = [];
+        foreach ($request->input('events', []) as $event) {
+            $events[$event['type']] = $event;
+        }
+        return $events;
+    }
+}
+```
+
+Each matching handler will receive its own event name and data pair.
 
 ### Securing Webhooks
 
