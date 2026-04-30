@@ -27,6 +27,26 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'webhook_secret' => 'slack-webhook-secret',
         ]);
 
+        $app['config']->set('services.shopify', [
+            'webhook_secret' => 'shopify-webhook-secret',
+        ]);
+
+        $app['config']->set('services.twilio', [
+            'webhook_secret' => 'twilio-webhook-secret',
+        ]);
+
+        $app['config']->set('services.mailchimp', [
+            'webhook_secret' => 'mailchimp-webhook-secret',
+        ]);
+
+        $app['config']->set('services.sendgrid', [
+            'webhook_secret' => '',
+        ]);
+
+        $app['config']->set('services.paddle', [
+            'webhook_secret' => 'paddle-webhook-secret',
+        ]);
+
         $app['config']->set('services.postmark.webhook', [
             'headers' => [
                 'X-Custom-Header' => 'PostmarkExpected',

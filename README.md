@@ -10,9 +10,14 @@ Out of the box, Receiver has built in support for:
 
 - [GitHub Webhooks](https://docs.github.com/en/developers/webhooks-and-events/webhooks/about-webhooks)
 - [Hubspot Webhooks](https://developers.hubspot.com/docs/api/webhooks)
+- [Mailchimp Marketing Webhooks](https://mailchimp.com/developer/marketing/guides/sync-audience-data-webhooks/)
+- [Paddle Billing Webhooks](https://developer.paddle.com/webhooks/overview)
 - [Postmark Webhooks](https://postmarkapp.com/developer/webhooks/webhooks-overview)
+- [SendGrid Event Webhooks](https://docs.sendgrid.com/for-developers/tracking-events/getting-started-event-webhook-security-features)
+- [Shopify Webhooks](https://shopify.dev/docs/apps/webhooks)
 - [Slack Events API](https://api.slack.com/apis/connections/events-api)
 - [Stripe Webhooks](https://stripe.com/docs/webhooks)
+- [Twilio Webhooks](https://www.twilio.com/docs/usage/webhooks)
 
 Of course, Receiver can receive webhooks from any source using [custom providers](#extending-receiver).
 
@@ -32,6 +37,7 @@ Of course, Receiver can receive webhooks from any source using [custom providers
     - [Queueing handlers](#queueing-handlers)
 - [Extending Receiver](#extending-receiver)
     - [Adding custom providers](#adding-custom-providers)
+    - [Creating a community provider](#creating-a-community-provider)
     - [Defining attributes](#defining-attributes)
     - [Receiving multiple events in a single webhook](#receiving-multiple-events-in-a-single-webhook)
     - [Securing webhooks](#securing-webhooks)
@@ -73,6 +79,40 @@ Each provider reads its signing secret from `config/services.php`. Add the relev
 ],
 ```
 
+**Mailchimp**
+
+Mailchimp Marketing webhooks use a secret embedded in your configured webhook URL (`?secret=...`). Configure the same value here:
+
+```php
+'mailchimp' => [
+    'webhook_secret' => env('MAILCHIMP_WEBHOOK_SECRET'),
+],
+```
+
+**Paddle**
+```php
+'paddle' => [
+    'webhook_secret' => env('PADDLE_WEBHOOK_SECRET'),
+],
+```
+
+**SendGrid**
+
+Verification is opt-in. Set `webhook_secret` to the PEM-format public key from the SendGrid dashboard (Settings → Mail Settings → Event Webhook). Leave it empty to accept all requests without signature verification.
+
+```php
+'sendgrid' => [
+    'webhook_secret' => env('SENDGRID_WEBHOOK_PUBLIC_KEY', ''),
+],
+```
+
+**Shopify**
+```php
+'shopify' => [
+    'webhook_secret' => env('SHOPIFY_WEBHOOK_SECRET'),
+],
+```
+
 **Slack**
 ```php
 'slack' => [
@@ -84,6 +124,13 @@ Each provider reads its signing secret from `config/services.php`. Add the relev
 ```php
 'stripe' => [
     'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+],
+```
+
+**Twilio**
+```php
+'twilio' => [
+    'webhook_secret' => env('TWILIO_AUTH_TOKEN'),
 ],
 ```
 
@@ -330,49 +377,44 @@ php artisan receiver:make <name> --verified
 Once you've created your new provider you can simply extend Receiver in your `AppServiceProvider` so that Receiver can use it:
 
 ```php
-<?php
+$receiver = app('receiver');
 
-namespace App\Providers;
+$receiver->extend('mailgun', function ($app) {
+    return new MailgunProvider(
+        config('services.mailgun.webhook_secret')
+    );
+});
+```
 
-use App\Http\Receivers\MailchimpProvider;
-use App\Http\Receivers\MailgunProvider;
-use Illuminate\Support\ServiceProvider;
+### Creating a Community Provider
 
-class AppServiceProvider extends ServiceProvider
+If you're building a standalone provider package to share with the community, add the `--provider` flag to also scaffold a companion `ServiceProvider` that auto-registers the driver via `Receiver::extend()`:
+
+```shell
+php artisan receiver:make <name> --provider
+# or with signature verification
+php artisan receiver:make <name> --verified --provider
+```
+
+This generates two files:
+
+- `app/Http/Receivers/{Name}Provider.php` — your provider class
+- `app/Providers/{Name}ReceiverServiceProvider.php` — registers the driver
+
+The generated `ServiceProvider` calls `Receiver::extend()` in its `boot` method so consumers only need to add the provider to `config/app.php` (or use package auto-discovery).
+
+To publish your package for auto-discovery, add the service provider to your package's `composer.json`:
+
+```json
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        // 
-    }
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $receiver = app('receiver');
-
-        $receiver->extend('mailchimp', function ($app) {
-            return new MailchimpProvider(
-                config('services.mailchimp.webhook_secret')
-            );
-        });
-        
-        $receiver->extend('mailgun', function ($app) {
-            return new MailgunProvider(
-                config('services.mailgun.webhook_secret')
-            );
-        });
+    "extra": {
+        "laravel": {
+            "providers": [
+                "YourVendor\\YourPackage\\YourReceiverServiceProvider"
+            ]
+        }
     }
 }
-
 ```
 
 ### Defining Attributes
@@ -502,7 +544,9 @@ Unlike the `verify` method, `handshake` expects an array to be returned, since m
 
 ## Share your Receivers!
 
-**Have you created a custom Receiver?** Share it with the community in our **[Receivers Discussion topic](https://github.com/hotmeteor/receiver/discussions/categories/receivers)**!
+**Have you created a custom Receiver provider?** Share it with the community in our **[Receivers Discussion topic](https://github.com/hotmeteor/receiver/discussions/categories/receivers)**!
+
+> **Tip:** Use `php artisan receiver:make <name> --provider` to scaffold a standalone package with a companion `ServiceProvider` that supports Laravel's package auto-discovery.
 
 ## Credits
 

@@ -89,6 +89,51 @@ class GenerateReceiver extends GeneratorCommand
     {
         return [
             ['verified', false, InputOption::VALUE_NONE, 'Webhooks are verified with a signature'],
+            ['provider', false, InputOption::VALUE_NONE, 'Also generate a companion ServiceProvider for package distribution'],
         ];
+    }
+
+    public function handle()
+    {
+        if (parent::handle() === false) {
+            return false;
+        }
+
+        if ($this->option('provider')) {
+            $this->generateServiceProvider();
+        }
+    }
+
+    protected function generateServiceProvider(): void
+    {
+        $name = $this->argument('name');
+        $class = class_basename(Str::studly(str_replace(['Receiver'], '', $name)));
+        $driverName = Str::lower($class);
+        $serviceProviderClass = $class.'ReceiverServiceProvider';
+
+        $path = $this->laravel->basePath().'/app/Providers/'.$serviceProviderClass.'.php';
+
+        if ($this->files->exists($path)) {
+            $this->components->error("Service provider [{$serviceProviderClass}] already exists!");
+
+            return;
+        }
+
+        $directory = dirname($path);
+        if (! $this->files->isDirectory($directory)) {
+            $this->files->makeDirectory($directory, 0777, true, true);
+        }
+
+        $stub = $this->files->get(__DIR__.'/../../../stubs/receiver-provider.stub');
+
+        $stub = str_replace(
+            ['{{ serviceProviderNamespace }}', '{{ serviceProviderClass }}', '{{ driverName }}', '{{ providerNamespace }}', '{{ providerClass }}'],
+            ['App\\Providers', $serviceProviderClass, $driverName, 'App\\Http\\Receivers', $class],
+            $stub
+        );
+
+        $this->files->put($path, $stub);
+
+        $this->components->info("Service provider [{$path}] created successfully.");
     }
 }

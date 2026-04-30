@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ serviceProviderNamespace }};
+
+use Illuminate\Support\ServiceProvider;
+use Receiver\Facades\Receiver;
+
+class {{ serviceProviderClass }} extends ServiceProvider
+{
+    public function boot(): void
+    {
+        Receiver::extend('{{ driverName }}', function ($app) {
+            return app(\Receiver\ReceiverManager::class)->buildProvider(
+                \{{ providerNamespace }}\{{ providerClass }}::class,
+                config('services.{{ driverName }}')
+            );
+        });
+    }
+}

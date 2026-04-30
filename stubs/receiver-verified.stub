@@ -7,28 +7,16 @@ use Receiver\Providers\AbstractProvider;
 
 class {{ providerClass }} extends AbstractProvider
 {
-    /**
-     * @param Request $request
-     * @return bool
-     */
     public function verify(Request $request): bool
     {
         return true;
     }
 
-    /**
-     * @param Request $request
-     * @return string
-     */
-    public function getEvent(Request $request): string
+    public function getEvent(Request $request): string|array
     {
         //
     }
 
-    /**
-     * @param Request $request
-     * @return array
-     */
     public function getData(Request $request): array
     {
         //
