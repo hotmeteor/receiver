@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Providers\SlackProvider;
 use Receiver\Providers\Webhook;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -14,10 +15,9 @@ class SlackProviderTest extends TestCase
 {
     /**
      * https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification.
-     *
-     * @return void
      */
-    public function test_it_can_receive_slack_handshake()
+    #[Test]
+    public function it_can_receive_slack_handshake(): void
     {
         $request = Mockery::mock(Request::class);
         $request->allows('has')->with('challenge')->andReturns(true);
@@ -34,7 +34,8 @@ class SlackProviderTest extends TestCase
         $this->assertJson(json_encode(['challenge' => 'slack-challenge-token']), $response->content());
     }
 
-    public function test_it_can_sign_and_verify_slack_webhook()
+    #[Test]
+    public function it_can_sign_and_verify_slack_webhook(): void
     {
         $valid_signature = 'v0=9cd89ead8bc70cf63775d36d04c592a4833c253d9f0f0c0b21762f0f6e9ae429';
         $time = Carbon::parse('2022-08-01 12:00:00', 'America/Chicago');
@@ -57,7 +58,8 @@ class SlackProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $webhook);
     }
 
-    public function test_it_can_sign_and_deny_slack_webhook()
+    #[Test]
+    public function it_can_sign_and_deny_slack_webhook(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized');
@@ -76,12 +78,6 @@ class SlackProviderTest extends TestCase
         $provider->receive($request);
     }
 
-    /**
-     * @param Request $request
-     * @param int $timestamp
-     * @param string $signature
-     * @return Request
-     */
     protected function signUsing(Request $request, int $timestamp, string $signature): Request
     {
         $request->allows('header')->with('X-Slack-Request-Timestamp')->andReturns($timestamp);
@@ -93,9 +89,6 @@ class SlackProviderTest extends TestCase
 
     /**
      * https://api.slack.com/apis/connections/events-api#the-events-api__receiving-events__event-type-structure.
-     *
-     * @param string|null $key
-     * @return mixed
      */
     protected function mockPayload(string $key = null): mixed
     {

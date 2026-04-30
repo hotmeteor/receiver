@@ -4,11 +4,13 @@ namespace Receiver\Tests;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Facades\Receiver;
 
 class FacadeTest extends TestCase
 {
-    public function test_ide_helpers()
+    #[Test]
+    public function ide_helpers(): void
     {
         $request = new Request();
 

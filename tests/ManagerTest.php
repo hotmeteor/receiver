@@ -2,13 +2,15 @@
 
 namespace Receiver\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Contracts\Factory;
 use Receiver\Providers\GithubProvider;
 use Receiver\Providers\PostmarkProvider;
 
 class ManagerTest extends TestCase
 {
-    public function test_it_can_instantiate_the_github_driver()
+    #[Test]
+    public function it_can_instantiate_the_github_driver(): void
     {
         $factory = $this->app->make(Factory::class);
 
@@ -17,7 +19,8 @@ class ManagerTest extends TestCase
         $this->assertInstanceOf(GithubProvider::class, $provider);
     }
 
-    public function test_it_can_instantiate_the_postmark_driver()
+    #[Test]
+    public function it_can_instantiate_the_postmark_driver(): void
     {
         $factory = $this->app->make(Factory::class);
 

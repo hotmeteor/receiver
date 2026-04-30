@@ -4,12 +4,14 @@ namespace Receiver\Tests;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Providers\Webhook;
 use Receiver\Tests\Fixtures\TestProvider;
 
 class ProviderTest extends TestCase
 {
-    public function test_handles_webhook_with_existing_handler()
+    #[Test]
+    public function handles_webhook_with_existing_handler(): void
     {
         $request = new Request($this->mockPayload());
 
@@ -23,7 +25,8 @@ class ProviderTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    public function test_handles_webhook_with_missing_handler()
+    #[Test]
+    public function handles_webhook_with_missing_handler(): void
     {
         $this->expectExceptionMessage('Fallback!');
 
@@ -42,7 +45,8 @@ class ProviderTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    public function test_handles_multiple_events_in_single_payload()
+    #[Test]
+    public function handles_multiple_events_in_single_payload(): void
     {
         $events = [
             'event_a' => ['id' => 1],
@@ -63,7 +67,8 @@ class ProviderTest extends TestCase
         $this->assertTrue($provider->dispatched(Fixtures\EventB::class));
     }
 
-    public function test_handler_class_resolved_case_insensitively()
+    #[Test]
+    public function handler_class_resolved_case_insensitively(): void
     {
         // 'FOO.BARRED' and 'foo.barred' must resolve to the same class
         $payload = $this->mockPayload();

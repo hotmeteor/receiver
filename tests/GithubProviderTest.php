@@ -5,12 +5,14 @@ namespace Receiver\Tests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Providers\GithubProvider;
 use Receiver\Providers\Webhook;
 
 class GithubProviderTest extends TestCase
 {
-    public function test_it_can_receive_github_webhook()
+    #[Test]
+    public function it_can_receive_github_webhook(): void
     {
         Log::partialMock()->shouldReceive('info')->never();
 
@@ -31,7 +33,8 @@ class GithubProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $webhook);
     }
 
-    public function test_it_dispatches_matching_handler()
+    #[Test]
+    public function it_dispatches_matching_handler(): void
     {
         Log::partialMock()->shouldReceive('info')->withArgs(['Webhook handled.'])->andReturnNull();
 
@@ -55,11 +58,6 @@ class GithubProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $webhook);
     }
 
-    /**
-     * @param Request $request
-     * @param string $signature
-     * @return Request
-     */
     protected function signUsing(Request $request, string $signature): Request
     {
         $request->allows('getContent')->andReturns(json_encode($this->mockPayload()));
@@ -70,9 +68,6 @@ class GithubProviderTest extends TestCase
 
     /**
      * https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#example-delivery.
-     *
-     * @param string|null $key
-     * @return mixed
      */
     protected function mockPayload(string $key = null): mixed
     {

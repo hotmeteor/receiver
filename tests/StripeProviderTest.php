@@ -5,13 +5,15 @@ namespace Receiver\Tests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Providers\StripeProvider;
 use Receiver\Providers\Webhook;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class StripeProviderTest extends TestCase
 {
-    public function test_it_can_receive_stripe_webhook()
+    #[Test]
+    public function it_can_receive_stripe_webhook(): void
     {
         $secret = 'stripe-test-secret';
         $timestamp = time();
@@ -35,7 +37,8 @@ class StripeProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $provider->webhook());
     }
 
-    public function test_it_denies_invalid_stripe_signature()
+    #[Test]
+    public function it_denies_invalid_stripe_signature(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized');
@@ -50,7 +53,8 @@ class StripeProviderTest extends TestCase
         $provider->receive($request);
     }
 
-    public function test_it_handles_stripe_handshake()
+    #[Test]
+    public function it_handles_stripe_handshake(): void
     {
         $request = Mockery::mock(Request::class);
         $request->allows('has')->with('challenge')->andReturns(true);
@@ -65,7 +69,8 @@ class StripeProviderTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    public function test_it_gets_event_from_type()
+    #[Test]
+    public function it_gets_event_from_type(): void
     {
         $request = Mockery::mock(Request::class);
         $request->allows('input')->with('type')->andReturns('customer.created');
@@ -75,7 +80,8 @@ class StripeProviderTest extends TestCase
         $this->assertEquals('customer.created', $provider->getEvent($request));
     }
 
-    public function test_it_gets_data_from_data_key()
+    #[Test]
+    public function it_gets_data_from_data_key(): void
     {
         $request = Mockery::mock(Request::class);
         $request->allows('input')->with('data')->andReturns(['object' => ['id' => 'cus_123']]);

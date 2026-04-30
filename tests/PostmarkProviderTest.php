@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Providers\PostmarkProvider;
 use Receiver\Providers\Webhook;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -16,7 +17,8 @@ class PostmarkProviderTest extends TestCase
     // verify() — auth mode
     // -------------------------------------------------------------------------
 
-    public function test_it_can_verify_postmark_webhook_via_auth()
+    #[Test]
+    public function it_can_verify_postmark_webhook_via_auth(): void
     {
         Config::set('services.postmark.webhook.verification_types', ['auth']);
 
@@ -30,7 +32,8 @@ class PostmarkProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $provider->webhook());
     }
 
-    public function test_it_denies_postmark_webhook_with_invalid_auth()
+    #[Test]
+    public function it_denies_postmark_webhook_with_invalid_auth(): void
     {
         Config::set('services.postmark.webhook.verification_types', ['auth']);
 
@@ -49,7 +52,8 @@ class PostmarkProviderTest extends TestCase
     // verify() — headers mode
     // -------------------------------------------------------------------------
 
-    public function test_it_can_verify_postmark_webhook_via_valid_headers()
+    #[Test]
+    public function it_can_verify_postmark_webhook_via_valid_headers(): void
     {
         Config::set('services.postmark.webhook.verification_types', ['headers']);
 
@@ -63,7 +67,8 @@ class PostmarkProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $provider->webhook());
     }
 
-    public function test_it_denies_postmark_webhook_with_missing_header()
+    #[Test]
+    public function it_denies_postmark_webhook_with_missing_header(): void
     {
         Config::set('services.postmark.webhook.verification_types', ['headers']);
 
@@ -77,7 +82,8 @@ class PostmarkProviderTest extends TestCase
         $provider->receive($request);
     }
 
-    public function test_it_denies_postmark_webhook_with_wrong_header_value()
+    #[Test]
+    public function it_denies_postmark_webhook_with_wrong_header_value(): void
     {
         Config::set('services.postmark.webhook.verification_types', ['headers']);
 
@@ -96,7 +102,8 @@ class PostmarkProviderTest extends TestCase
     // verify() — IPs mode
     // -------------------------------------------------------------------------
 
-    public function test_it_can_verify_postmark_webhook_via_allowed_ip()
+    #[Test]
+    public function it_can_verify_postmark_webhook_via_allowed_ip(): void
     {
         Config::set('services.postmark.webhook.verification_types', ['ips']);
 
@@ -109,7 +116,8 @@ class PostmarkProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $provider->webhook());
     }
 
-    public function test_it_denies_postmark_webhook_from_disallowed_ip()
+    #[Test]
+    public function it_denies_postmark_webhook_from_disallowed_ip(): void
     {
         Config::set('services.postmark.webhook.verification_types', ['ips']);
 
@@ -127,7 +135,8 @@ class PostmarkProviderTest extends TestCase
     // verify() — no verification_types configured
     // -------------------------------------------------------------------------
 
-    public function test_it_passes_when_no_verification_types_configured()
+    #[Test]
+    public function it_passes_when_no_verification_types_configured(): void
     {
         Config::set('services.postmark.webhook.verification_types', []);
 
@@ -143,7 +152,8 @@ class PostmarkProviderTest extends TestCase
     // getEvent()
     // -------------------------------------------------------------------------
 
-    public function test_it_gets_record_type_event()
+    #[Test]
+    public function it_gets_record_type_event(): void
     {
         $request = Mockery::mock(Request::class);
         $request->allows('filled')->with('RecordType')->andReturns(true);
@@ -154,7 +164,8 @@ class PostmarkProviderTest extends TestCase
         $this->assertEquals('Bounce', $provider->getEvent($request));
     }
 
-    public function test_it_defaults_to_inbound_event()
+    #[Test]
+    public function it_defaults_to_inbound_event(): void
     {
         $request = Mockery::mock(Request::class);
         $request->allows('filled')->with('RecordType')->andReturns(false);

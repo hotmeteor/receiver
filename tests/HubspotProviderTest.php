@@ -3,16 +3,17 @@
 namespace Receiver\Tests;
 
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Receiver\Providers\HubspotProvider;
 use Receiver\Providers\Webhook;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class HubspotProviderTest extends TestCase
 {
-    public function test_it_can_receive_hubspot_webhook()
+    #[Test]
+    public function it_can_receive_hubspot_webhook(): void
     {
         $secret = 'hubspot-webhook-secret';
         $time = Carbon::parse('2022-08-01 12:00:00', 'America/Chicago');
@@ -39,7 +40,8 @@ class HubspotProviderTest extends TestCase
         $this->assertInstanceOf(Webhook::class, $provider->webhook());
     }
 
-    public function test_it_denies_invalid_hubspot_webhook()
+    #[Test]
+    public function it_denies_invalid_hubspot_webhook(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized');
@@ -58,7 +60,8 @@ class HubspotProviderTest extends TestCase
         $provider->receive($request);
     }
 
-    public function test_it_denies_expired_hubspot_webhook()
+    #[Test]
+    public function it_denies_expired_hubspot_webhook(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized');
@@ -72,7 +75,8 @@ class HubspotProviderTest extends TestCase
         $provider->receive($request);
     }
 
-    public function test_it_gets_event_from_event_type()
+    #[Test]
+    public function it_gets_event_from_event_type(): void
     {
         $request = Mockery::mock(Request::class);
         $request->allows('input')->with('eventType')->andReturns('contact.creation');
