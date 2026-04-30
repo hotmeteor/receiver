@@ -15,13 +15,7 @@ class PostmarkProvider extends AbstractProvider
      */
     public function verify(Request $request): bool
     {
-        try {
-            Auth::onceBasic();
-
-            return true;
-        } catch (\Exception $exception) {
-            return false;
-        }
+        return Auth::onceBasic() === null;
     }
 
     /**

@@ -33,7 +33,7 @@ abstract class AbstractWebhook implements ArrayAccess, Webhook
      */
     public function getEvent(): string
     {
-        return $this->event;
+        return $this->event ?? '';
     }
 
     /**

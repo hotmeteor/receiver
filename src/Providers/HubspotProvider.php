@@ -23,7 +23,6 @@ class HubspotProvider extends AbstractProvider
                 $request->getContent(),
             ]);
 
-            $signature = urlencode($signature);
             $signature = hash_hmac('sha256', $signature, $this->secret);
             $signature = base64_encode($signature);
 

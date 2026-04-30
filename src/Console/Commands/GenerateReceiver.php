@@ -35,7 +35,7 @@ class GenerateReceiver extends GeneratorCommand
      */
     protected function getStub(): string
     {
-        return $this->option('verified') === false
+        return ! $this->option('verified')
             ? __DIR__.'/../../../stubs/receiver.stub'
             : __DIR__.'/../../../stubs/receiver-verified.stub';
     }

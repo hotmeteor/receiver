@@ -16,7 +16,7 @@ class IssuesClosed implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(public string $name, public array $data)
+    public function __construct(public string $event, public array $data)
     {
     }
 

@@ -42,8 +42,8 @@ Of course, Receiver can receive webhooks from any source using [custom providers
 
 Requires:
 
-- PHP ^8.1
-- Laravel 9+
+- PHP ^8.2
+- Laravel 10+
 
 ```shell
 composer require hotmeteor/receiver
