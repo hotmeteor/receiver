@@ -85,13 +85,25 @@ Most providers use the same shape:
 'mailchimp' => ['webhook_secret' => env('MAILCHIMP_WEBHOOK_SECRET')],
 ```
 
-**Mailtrap** — Handles both [inbound email](https://docs.mailtrap.io/inbound-email/receiving-emails) and [sending events](https://docs.mailtrap.io/email-api-smtp/advanced/webhooks) (delivery, bounce, open, click, etc.). Set `webhook_secret` to the signing secret on the webhook's details page in Mailtrap. Each webhook has its own secret. Keep the webhook's payload format set to JSON (the default).
+**Mailtrap** — Handles both [inbound email](https://docs.mailtrap.io/inbound-email/receiving-emails) and [sending events](https://docs.mailtrap.io/email-api-smtp/advanced/webhooks) (delivery, bounce, open, click and more). Set `webhook_secret` to the signing secret on the webhook's details page in Mailtrap, and keep the webhook's payload format set to JSON (the default).
 
 ```php
 'mailtrap' => ['webhook_secret' => env('MAILTRAP_WEBHOOK_SECRET')],
 ```
 
 For example, an `inbound.message_received` event dispatches `App\Http\Handlers\Mailtrap\InboundMessageReceived`. Mailtrap batches events, so `$data` is a list of every event of that type in the request. Inbound events carry the `inbox_id` and `message_id`, not the email itself. Fetch the message in your handler with `GET https://mailtrap.io/api/inbound/inboxes/{inbox_id}/messages/{message_id}`.
+
+Each Mailtrap webhook has its own signing secret. To receive more than one, such as inbound email and sending events, register a second driver for the other secret. Then point that webhook at the new driver, for example `/webhooks/mailtrap_sending`. Both drivers dispatch to the same `App\Http\Handlers\Mailtrap` handlers:
+
+```php
+// config/services.php
+'mailtrap_sending' => ['webhook_secret' => env('MAILTRAP_SENDING_WEBHOOK_SECRET')],
+
+// In a service provider's boot() method
+Receiver::extend('mailtrap_sending', fn () => new \Receiver\Providers\MailtrapProvider(
+    config('services.mailtrap_sending.webhook_secret')
+));
+```
 
 **SendGrid** — Signature verification is opt-in. Set `webhook_secret` to the PEM-format public key found in the SendGrid dashboard under Settings → Mail Settings → Event Webhook. Leave it empty to accept all requests without verification.
 
