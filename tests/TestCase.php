@@ -38,6 +38,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'webhook_secret' => 'mailchimp-webhook-secret',
         ]);
 
+        $app['config']->set('services.mailtrap', [
+            'webhook_secret' => 'mailtrap-webhook-secret',
+        ]);
+
         $app['config']->set('services.sendgrid', [
             'webhook_secret' => '',
         ]);

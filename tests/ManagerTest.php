@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Receiver\Contracts\Factory;
 use Receiver\Providers\GithubProvider;
 use Receiver\Providers\MailchimpProvider;
+use Receiver\Providers\MailtrapProvider;
 use Receiver\Providers\PaddleProvider;
 use Receiver\Providers\PostmarkProvider;
 use Receiver\Providers\SendGridProvider;
@@ -56,6 +57,14 @@ class ManagerTest extends TestCase
         $factory = $this->app->make(Factory::class);
 
         $this->assertInstanceOf(MailchimpProvider::class, $factory->driver('mailchimp'));
+    }
+
+    #[Test]
+    public function it_can_instantiate_the_mailtrap_driver(): void
+    {
+        $factory = $this->app->make(Factory::class);
+
+        $this->assertInstanceOf(MailtrapProvider::class, $factory->driver('mailtrap'));
     }
 
     #[Test]
