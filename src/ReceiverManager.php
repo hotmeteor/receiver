@@ -11,6 +11,7 @@ use Receiver\Providers\FakeProvider;
 use Receiver\Providers\GithubProvider;
 use Receiver\Providers\HubspotProvider;
 use Receiver\Providers\MailchimpProvider;
+use Receiver\Providers\MailtrapProvider;
 use Receiver\Providers\PaddleProvider;
 use Receiver\Providers\PostmarkProvider;
 use Receiver\Providers\SendGridProvider;
@@ -135,6 +136,17 @@ class ReceiverManager extends Manager implements Factory
         return $this->buildProvider(
             MailchimpProvider::class,
             $this->config->get('services.mailchimp')
+        );
+    }
+
+    /**
+     * Create an instance of the specified driver.
+     */
+    protected function createMailtrapDriver(): MailtrapProvider
+    {
+        return $this->buildProvider(
+            MailtrapProvider::class,
+            $this->config->get('services.mailtrap')
         );
     }
 
